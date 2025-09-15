@@ -1,0 +1,22 @@
+{
+  "name": "stop-&-go-race",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "deploy": "npm run build && netlify deploy --dir=dist --prod"
+  },
+  "dependencies": {
+    "@google/genai": "^1.15.0",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "vite": "^6.3.5"
+  },
+  "devDependencies": {
+    "@types/node": "^22.14.0",
+    "typescript": "~5.8.2"
+  }
+}

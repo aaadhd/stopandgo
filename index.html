@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stop & Go Race</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+      body {
+        font-family: 'Baloo 2', sans-serif;
+        user-select: none;
+        margin: 0;
+        background-color: #87CEEB; /* Sky Blue */
+        overflow: hidden; /* Hide scrollbars */
+      }
+      @keyframes shield-pulse {
+          0% { filter: drop-shadow(0 0 0 rgba(255, 255, 255, 0.7)); }
+          50% { filter: drop-shadow(0 0 15px rgba(52, 152, 219, 0.9)); }
+          100% { filter: drop-shadow(0 0 0 rgba(255, 255, 255, 0.7)); }
+      }
+      @keyframes slowed-pulse {
+          0% { filter: drop-shadow(0 0 0 rgba(255, 255, 255, 0.7)); }
+          50% { filter: drop-shadow(0 0 20px #F44336); }
+          100% { filter: drop-shadow(0 0 0 rgba(255, 255, 255, 0.7)); }
+      }
+      @keyframes shake {
+          0%, 100% { transform: translateX(0); }
+          25% { transform: translateX(-10px) rotate(-5deg); }
+          75% { transform: translateX(10px) rotate(5deg); }
+      }
+      @keyframes item-appear {
+          from { transform: scale(0.5) translateX(-50%); opacity: 0; }
+          to { transform: scale(1) translateX(-50%); opacity: 1; }
+      }
+      @keyframes item-disappear {
+          from { transform: scale(1) translateX(-50%); opacity: 1; }
+          to { transform: scale(0.5) translateX(-50%); opacity: 0; }
+      }
+
+      /* Emoji Runner Animations */
+      @keyframes runner-bob {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-8px); }
+      }
+      @keyframes cheer-jump {
+        0%, 100% { transform: translateY(0) scale(1) rotate(0deg); }
+        50% { transform: translateY(-25px) scale(1.2) rotate(10deg); }
+      }
+      
+      /* Confetti Animation */
+      @keyframes confetti-fall {
+        0% { transform: translateY(-100px) rotateZ(0deg); opacity: 1; }
+        100% { transform: translateY(800px) rotateZ(360deg); opacity: 0; }
+      }
+      .confetti {
+        position: absolute;
+        top: 0;
+        width: 10px;
+        height: 10px;
+        animation: confetti-fall 3s linear infinite;
+      }
+      
+      /* GO Button Pulse Animation */
+      @keyframes go-pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+      }
+
+      .animation-shield-pulse { animation: shield-pulse 1.5s infinite; }
+      .animation-slowed-pulse { animation: slowed-pulse 1s infinite; }
+      .animation-shake { animation: shake 0.5s; }
+      .animation-item-appear { animation: item-appear 0.5s forwards; }
+      .animation-item-disappear { animation: item-disappear 0.5s forwards; }
+      .animation-runner-bob { animation: runner-bob 0.4s infinite ease-in-out; }
+      .animation-cheer-jump { animation: cheer-jump 0.8s infinite; }
+      .animation-go-pulse { animation: go-pulse 1.5s infinite; }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.1.1",
+    "react-dom/": "https://esm.sh/react-dom@^19.1.1/",
+    "react/": "https://esm.sh/react@^19.1.1/",
+    "@google/genai": "https://esm.sh/@google/genai@^1.15.0"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>

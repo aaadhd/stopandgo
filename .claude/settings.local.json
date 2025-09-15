@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(rd:*)",
+      "Bash(rm:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run build:*)",
+      "Bash(npx vite:*)",
+      "Bash(\"./node_modules/.bin/vite\" build)",
+      "Bash(npm run dev:*)",
+      "Bash(./node_modules/.bin/vite)",
+      "Bash(node_modules/.bin/vite:*)",
+      "Bash(\"./node_modules/.bin/vite\")"
+    ],
+    "additionalDirectories": [
+      "C:\\"
+    ]
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "name": "Stop & Go Race",
+  "description": "A fun, two-player racing game where timing is everything. Players press their 'GO' button on the green light to advance, but pressing on red sends them back to the start. Collect items to gain advantages or penalize your opponent. Win the round to answer a quiz question for a bonus point!",
+  "requestFramePermissions": []
+}
