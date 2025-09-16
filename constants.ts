@@ -1,12 +1,12 @@
 
 import { PlayerStatus, PlayerStatuses } from './types';
 
-export const MAX_ROUNDS = 12;
-export const ROUND_TIME_LIMIT = 20;
+export const MAX_ROUNDS = 5;
+export const ROUND_TIME_LIMIT = 15;
 export const FINISH_POSITION = 88;
-export const MOVE_AMOUNT = 5;
-export const BOOST_MULTIPLIER = 2;
-export const SLOW_MULTIPLIER = 0.25;
+export const MOVE_AMOUNT = 4;
+export const BOOST_MULTIPLIER = 2.5;
+export const SLOW_MULTIPLIER = 0.2;
 export const ITEM_EFFECT_DURATION = 3000; // 3 seconds
 export const MIN_ITEM_DISTANCE = 15; // Minimum distance between spawned items
 

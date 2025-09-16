@@ -18,7 +18,7 @@ const ControlButton: React.FC<{
     const teamColor = TEAM_COLORS[team];
     // Corrected the horizontal alignment to be perfectly centered under the player characters.
     const leftPosition = team === 'red' ? 'left-[27%]' : 'left-[73%]';
-    const pulseAnimation = !disabled && currentLight === 'green' ? 'animation-go-pulse' : '';
+    const pulseAnimation = !disabled && currentLight === 'green' ? 'animation-go-pulse button-green-glow' : '';
 
     const handlePress = (e: React.MouseEvent | React.TouchEvent) => {
         e.preventDefault();
@@ -42,8 +42,9 @@ const ControlButton: React.FC<{
 };
 
 const Controls: React.FC<ControlsProps> = ({ onGo, playerStatus, isGameActive, currentLight }) => {
-    const isRedDisabled = !isGameActive || playerStatus.red.isFrozen;
-    const isBlueDisabled = !isGameActive || playerStatus.blue.isFrozen;
+    const someoneWon = playerStatus.red.isWinner || playerStatus.blue.isWinner;
+    const isRedDisabled = !isGameActive || playerStatus.red.isFrozen || someoneWon;
+    const isBlueDisabled = !isGameActive || playerStatus.blue.isFrozen || someoneWon;
 
     return (
         <div className="relative bg-gray-100 border-t-2 border-gray-200 h-[120px]">

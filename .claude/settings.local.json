@@ -10,7 +10,8 @@
       "Bash(npm run dev:*)",
       "Bash(./node_modules/.bin/vite)",
       "Bash(node_modules/.bin/vite:*)",
-      "Bash(\"./node_modules/.bin/vite\")"
+      "Bash(\"./node_modules/.bin/vite\")",
+      "Bash(taskkill:*)"
     ],
     "additionalDirectories": [
       "C:\\"

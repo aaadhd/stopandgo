@@ -32,6 +32,7 @@ export const useGameLogic = () => {
     const quizTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const penaltyTimeoutRef = useRef<{ [key in Team]?: ReturnType<typeof setTimeout> }>({});
     const playerTimeoutRef = useRef<{ [key in Team]: { [key in keyof Omit<PlayerStatus, 'isWinner'|'penalty'>]?: ReturnType<typeof setTimeout> } }>({ red: {}, blue: {} });
+    const isShowingQuizRef = useRef<boolean>(false);
 
     const clearAllTimers = useCallback(() => {
         if (timerRef.current) {
@@ -134,7 +135,10 @@ export const useGameLogic = () => {
             clearTimeout(quizTimeoutRef.current);
             quizTimeoutRef.current = null;
         }
-        
+
+        // 퀴즈 플래그 리셋
+        isShowingQuizRef.current = false;
+
         playSound(isCorrect ? 'quiz-correct' : 'quiz-incorrect');
         setGameState(prev => {
             const newScores = { ...prev.scores };
@@ -168,7 +172,10 @@ export const useGameLogic = () => {
             if (prev.gamePhase !== GamePhase.QUIZ) {
                 return prev;
             }
-            
+
+            // 퀴즈 플래그 리셋
+            isShowingQuizRef.current = false;
+
             playSound('time-up');
             const newScores = { ...prev.scores };
             // 타임아웃이면 1점
@@ -196,32 +203,70 @@ export const useGameLogic = () => {
     }, [endGame]);
 
     const showQuiz = useCallback(async (winnerTeam: Team) => {
-        setGameState(prev => ({ ...prev, gamePhase: GamePhase.QUIZ, isQuizLoading: true, quiz: null }));
-        
-        // 퀴즈 타임아웃 설정 (10초)
+        // 이미 퀴즈를 보여주고 있으면 무시
+        if (isShowingQuizRef.current) {
+            return;
+        }
+
+        // 퀴즈 시작 플래그 설정
+        isShowingQuizRef.current = true;
+
+        // 중복 호출 방지
+        setGameState(prev => {
+            if (prev.gamePhase === GamePhase.QUIZ) {
+                return prev; // 이미 퀴즈 모드면 무시
+            }
+            return { ...prev, gamePhase: GamePhase.QUIZ, isQuizLoading: true, quiz: null };
+        });
+
+        // 기존 퀴즈 타임아웃 정리
+        if (quizTimeoutRef.current) {
+            clearTimeout(quizTimeoutRef.current);
+            quizTimeoutRef.current = null;
+        }
+
+        // 퀴즈 타임아웃 설정 (8초)
         quizTimeoutRef.current = setTimeout(() => {
             handleQuizTimeout(winnerTeam);
-        }, 10000);
+        }, 8000);
         
         try {
             const quizData = await generateQuizQuestion();
-            setGameState(prev => ({ ...prev, quiz: quizData, isQuizLoading: false }));
+            setGameState(prev => {
+                // 게임 상태가 바뀐 경우 퀴즈 설정하지 않음
+                if (prev.gamePhase !== GamePhase.QUIZ) {
+                    return prev;
+                }
+                return { ...prev, quiz: quizData, isQuizLoading: false };
+            });
         } catch (error) {
             console.error("Failed to generate quiz:", error);
             // Fallback quiz
             const fallbackQuiz = {
                 question: "What is 2 + 2?",
-                answers: ["3", "4", "5"],
+                answers: ["3", "4", "5", "6"],
                 correctAnswer: "4",
             };
-            setGameState(prev => ({ ...prev, quiz: fallbackQuiz, isQuizLoading: false }));
+            setGameState(prev => {
+                // 게임 상태가 바뀐 경우 퀴즈 설정하지 않음
+                if (prev.gamePhase !== GamePhase.QUIZ) {
+                    return prev;
+                }
+                return { ...prev, quiz: fallbackQuiz, isQuizLoading: false };
+            });
         }
     }, [handleQuizTimeout]);
 
     const handleRoundWin = useCallback((winnerTeam: Team) => {
         clearAllTimers();
         playSound('round-win');
-        
+
+        // 모든 팀의 아이템 효과 해제
+        ['red', 'blue'].forEach(team => {
+            Object.values(playerTimeoutRef.current[team as Team]).forEach(clearTimeout);
+            playerTimeoutRef.current[team as Team] = {};
+        });
+
         setGameState(prev => {
             const newPlayerStatuses = JSON.parse(JSON.stringify(INITIAL_PLAYER_STATUSES));
             newPlayerStatuses[winnerTeam].isWinner = true;
@@ -231,7 +276,7 @@ export const useGameLogic = () => {
                 currentWinner: winnerTeam
             };
         });
-        
+
         setTimeout(() => {
             showQuiz(winnerTeam);
         }, 1000);
@@ -292,7 +337,7 @@ export const useGameLogic = () => {
 
         if (gameState.currentLight === 'green' || gameState.currentLight === 'yellow') {
             playSound('move');
-            
+
             setGameState(prev => {
                 const status = prev.playerStatus[team];
                 const speedMultiplier = status.isSlowed ? SLOW_MULTIPLIER : 1;
@@ -300,12 +345,27 @@ export const useGameLogic = () => {
                 const move = MOVE_AMOUNT * boostMultiplier * speedMultiplier;
                 let newPosition = prev.positions[team] + move;
 
+                // 결승선 도달
                 if (newPosition >= FINISH_POSITION) {
                     newPosition = FINISH_POSITION;
                     // 아직 승자가 없을 때만 승리 처리
                     if (!prev.playerStatus.red.isWinner && !prev.playerStatus.blue.isWinner) {
+                        // 결승선 도달 시 모든 아이템 효과 해제
+                        Object.values(playerTimeoutRef.current[team]).forEach(clearTimeout);
+                        playerTimeoutRef.current[team] = {};
+
                         handleRoundWin(team);
                     }
+                }
+
+                // 출발선 도달 (뒤로 이동해서 0 이하가 된 경우)
+                let shouldClearEffects = false;
+                if (newPosition <= 0) {
+                    newPosition = 0;
+                    shouldClearEffects = true;
+                    // 출발선 도달 시 모든 아이템 효과 해제
+                    Object.values(playerTimeoutRef.current[team]).forEach(clearTimeout);
+                    playerTimeoutRef.current[team] = {};
                 }
                 
                 const newItems = [...prev.items];
@@ -369,6 +429,13 @@ export const useGameLogic = () => {
                             break;
                     }
                 });
+
+                // 출발선 도달 시 플레이어 상태 초기화
+                if (shouldClearEffects) {
+                    newPlayerStatus[team] = {
+                        ...INITIAL_PLAYER_STATUS
+                    };
+                }
 
                 return {
                     ...prev,
@@ -462,7 +529,7 @@ export const useGameLogic = () => {
     }, []);
     
     const itemSpawner = useCallback(() => {
-        const nextSpawnTime = Math.random() * 2000 + 2000; // 2-4 seconds
+        const nextSpawnTime = Math.random() * 1500 + 1500; // 1.5-3 seconds
         itemSpawnRef.current = setTimeout(() => {
             if (gameState.gamePhase === GamePhase.PLAYING) {
                 spawnItem();
@@ -531,15 +598,15 @@ export const useGameLogic = () => {
                 switch(lightSequenceRef.current.currentState) {
                     case 'red': 
                         nextState = 'green';
-                        delay = Math.random() * 2000 + 3000; // 3-5초
+                        delay = Math.random() * 1000 + 1500; // 1.5-2.5초
                         break;
                     case 'green':
                         nextState = 'yellow';
-                        delay = 1500; // 1.5초
+                        delay = 800; // 0.8초
                         break;
                     case 'yellow':
                         nextState = 'red';
-                        delay = Math.random() * 2000 + 2000; // 2-4초
+                        delay = Math.random() * 1500 + 1500; // 1.5-3초
                         break;
                 }
                 
@@ -559,7 +626,7 @@ export const useGameLogic = () => {
                 }, delay);
             };
             
-            // 1초 후 첫 번째 신호 변경 시작
+            // 0.5초 후 첫 번째 신호 변경 시작 (더 빠른 게임 시작)
             lightTimerRef.current = setTimeout(() => {
                 if (!lightSequenceRef.current.isRunning || !isPlayingRef.current) return;
                 
@@ -572,13 +639,12 @@ export const useGameLogic = () => {
                 });
                 
                 runLightSequence();
-            }, 1000);
+            }, 500);
         }
 
-        // 게임이 끝나면 시퀀스 중단
+        // 게임이 끝나면 시퀀스 중단(현재 신호 유지)
         if (wasPlaying && !isNowPlaying) {
             lightSequenceRef.current.isRunning = false;
-            setGameState(prev => ({ ...prev, currentLight: 'red' }));
             if (lightTimerRef.current) {
                 clearTimeout(lightTimerRef.current);
                 lightTimerRef.current = null;
@@ -643,13 +709,16 @@ export const useGameLogic = () => {
 
     const resetGame = useCallback(() => {
         playSound('click');
-        
+
         // 모든 플레이어 효과 타이머 정리
         ['red', 'blue'].forEach(team => {
             Object.values(playerTimeoutRef.current[team as Team]).forEach(clearTimeout);
         });
         playerTimeoutRef.current = { red: {}, blue: {} };
-        
+
+        // 퀴즈 플래그 리셋
+        isShowingQuizRef.current = false;
+
         setGameState(initialGameState);
     }, []);
 

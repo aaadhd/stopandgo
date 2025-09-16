@@ -11,11 +11,11 @@ type QuizModalProps = {
 
 const QuizModal: React.FC<QuizModalProps> = ({ quiz, isLoading, winnerTeam, onAnswer }) => {
     const teamColor = TEAM_COLORS[winnerTeam];
-    const [timeLeft, setTimeLeft] = useState(10);
+    const [timeLeft, setTimeLeft] = useState(8);
 
     useEffect(() => {
         if (!isLoading && quiz) {
-            setTimeLeft(10);
+            setTimeLeft(8);
             const timer = setInterval(() => {
                 setTimeLeft(prev => {
                     if (prev <= 1) {
@@ -28,7 +28,7 @@ const QuizModal: React.FC<QuizModalProps> = ({ quiz, isLoading, winnerTeam, onAn
 
             return () => clearInterval(timer);
         }
-    }, [isLoading, quiz]);
+    }, [isLoading, quiz?.question]); // quiz 객체 대신 quiz.question만 감시
 
     return (
         <div className="absolute inset-0 bg-black/60 flex justify-center items-center z-50">
