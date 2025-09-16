@@ -58,14 +58,14 @@ export const useGameLogic = () => {
         
         // 벌칙 타이머들 정리
         Object.values(penaltyTimeoutRef.current).forEach(timeout => {
-            if (timeout) clearTimeout(timeout);
+            if (timeout) clearTimeout(timeout as NodeJS.Timeout);
         });
         penaltyTimeoutRef.current = {};
         
         // 플레이어 효과 타이머들 정리
         ['red', 'blue'].forEach(team => {
             Object.values(playerTimeoutRef.current[team as Team]).forEach(timeout => {
-                if (timeout) clearTimeout(timeout);
+                if (timeout) clearTimeout(timeout as NodeJS.Timeout);
             });
         });
         playerTimeoutRef.current = { red: {}, blue: {} };

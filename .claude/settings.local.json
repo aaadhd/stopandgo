@@ -11,7 +11,8 @@
       "Bash(./node_modules/.bin/vite)",
       "Bash(node_modules/.bin/vite:*)",
       "Bash(\"./node_modules/.bin/vite\")",
-      "Bash(taskkill:*)"
+      "Bash(taskkill:*)",
+      "Bash(npx tsc:*)"
     ],
     "additionalDirectories": [
       "C:\\"
