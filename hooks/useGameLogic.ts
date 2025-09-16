@@ -158,7 +158,16 @@ export const useGameLogic = () => {
                         if (prev.currentRound >= MAX_ROUNDS) {
                             endGame();
                         } else {
-                            setGameState(p => ({ ...p, currentRound: p.currentRound + 1, gamePhase: GamePhase.ROUND_START, currentWinner: null }));
+                            setGameState(p => ({
+                                ...p,
+                                currentRound: p.currentRound + 1,
+                                gamePhase: GamePhase.ROUND_START,
+                                currentWinner: null,
+                                positions: { red: 0, blue: 0 },
+                                items: [],
+                                playerStatus: INITIAL_PLAYER_STATUSES,
+                                currentLight: 'red',
+                            }));
                         }
                     }
                 }
@@ -194,7 +203,16 @@ export const useGameLogic = () => {
                         if (prev.currentRound >= MAX_ROUNDS) {
                             endGame();
                         } else {
-                            setGameState(p => ({ ...p, currentRound: p.currentRound + 1, gamePhase: GamePhase.ROUND_START, currentWinner: null }));
+                            setGameState(p => ({
+                                ...p,
+                                currentRound: p.currentRound + 1,
+                                gamePhase: GamePhase.ROUND_START,
+                                currentWinner: null,
+                                positions: { red: 0, blue: 0 },
+                                items: [],
+                                playerStatus: INITIAL_PLAYER_STATUSES,
+                                currentLight: 'red',
+                            }));
                         }
                     }
                 }
@@ -323,7 +341,15 @@ export const useGameLogic = () => {
                             if (currentRound >= MAX_ROUNDS) {
                                 endGame();
                             } else {
-                                setGameState(p => ({ ...p, currentRound: p.currentRound + 1, gamePhase: GamePhase.ROUND_START }));
+                                setGameState(p => ({
+                                    ...p,
+                                    currentRound: p.currentRound + 1,
+                                    gamePhase: GamePhase.ROUND_START,
+                                    positions: { red: 0, blue: 0 },
+                                    items: [],
+                                    playerStatus: INITIAL_PLAYER_STATUSES,
+                                    currentLight: 'red',
+                                }));
                             }
                         }
                     }
@@ -667,7 +693,15 @@ export const useGameLogic = () => {
     // Game Actions
     const startGame = useCallback(() => {
         playSound('start');
-        setGameState(prev => ({ ...prev, gamePhase: GamePhase.ROUND_START }));
+        setGameState(prev => ({
+            ...prev,
+            gamePhase: GamePhase.ROUND_START,
+            positions: { red: 0, blue: 0 },
+            items: [],
+            playerStatus: INITIAL_PLAYER_STATUSES,
+            currentLight: 'red',
+            currentWinner: null,
+        }));
     }, []);
 
     const playRound = useCallback(() => {
