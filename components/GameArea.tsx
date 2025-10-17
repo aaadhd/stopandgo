@@ -294,9 +294,13 @@ const GameArea: React.FC<GameAreaProps> = ({ positions, playerStatus, currentLig
                 <div className="absolute left-6" style={{ top: '100px' }}>
                     {/* Team A Score */}
                     <div className={`px-6 py-3 rounded-full text-2xl font-bold transition-all ${scoreAnimation.red ? 'score-pop' : ''}`} style={{
-                        background: 'rgba(8, 145, 178, 0.7)',
-                        boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-                        border: '3px solid rgba(255,255,255,0.3)',
+                        background: 'rgba(8, 145, 178, 0.7)', // 모든 컨셉 동일한 투명도
+                        boxShadow: themeRound === 3
+                            ? '0 4px 12px rgba(0,0,0,0.3), 0 0 20px rgba(8, 145, 178, 0.4)' // 우주에서는 네온 효과
+                            : '0 4px 12px rgba(0,0,0,0.15)', // 숲, 바다는 기존 그림자
+                        border: themeRound === 3
+                            ? '3px solid rgba(0, 255, 255, 0.6)' // 우주에서는 시안색 테두리
+                            : '3px solid rgba(255,255,255,0.3)', // 숲, 바다는 흰색 테두리
                         backdropFilter: 'blur(8px)',
                         marginBottom: '8px',
                         minWidth: '180px',
@@ -308,9 +312,13 @@ const GameArea: React.FC<GameAreaProps> = ({ positions, playerStatus, currentLig
                     </div>
                     {/* Team A Players */}
                     <div className="px-4 py-3 rounded-lg" style={{
-                        background: 'rgba(8, 145, 178, 0.6)',
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                        border: '2px solid rgba(255,255,255,0.2)',
+                        background: 'rgba(8, 145, 178, 0.6)', // 모든 컨셉 동일한 투명도
+                        boxShadow: themeRound === 3
+                            ? '0 2px 8px rgba(0,0,0,0.2), 0 0 15px rgba(8, 145, 178, 0.3)' // 우주에서는 네온 효과
+                            : '0 2px 8px rgba(0,0,0,0.1)', // 숲, 바다는 기존 그림자
+                        border: themeRound === 3
+                            ? '2px solid rgba(0, 255, 255, 0.5)' // 우주에서는 시안색 테두리
+                            : '2px solid rgba(255,255,255,0.2)', // 숲, 바다는 흰색 테두리
                         backdropFilter: 'blur(6px)',
                         minWidth: '120px',
                         textAlign: 'center'
@@ -344,9 +352,13 @@ const GameArea: React.FC<GameAreaProps> = ({ positions, playerStatus, currentLig
                 <div className="absolute right-6" style={{ top: '100px' }}>
                     {/* Team B Score */}
                     <div className={`px-6 py-3 rounded-full text-2xl font-bold transition-all ${scoreAnimation.blue ? 'score-pop' : ''}`} style={{
-                        background: 'rgba(147, 51, 234, 0.7)',
-                        boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-                        border: '3px solid rgba(255,255,255,0.3)',
+                        background: 'rgba(147, 51, 234, 0.7)', // 모든 컨셉 동일한 투명도
+                        boxShadow: themeRound === 3
+                            ? '0 4px 12px rgba(0,0,0,0.3), 0 0 20px rgba(147, 51, 234, 0.4)' // 우주에서는 네온 효과
+                            : '0 4px 12px rgba(0,0,0,0.15)', // 숲, 바다는 기존 그림자
+                        border: themeRound === 3
+                            ? '3px solid rgba(255, 0, 255, 0.6)' // 우주에서는 마젠타색 테두리
+                            : '3px solid rgba(255,255,255,0.3)', // 숲, 바다는 흰색 테두리
                         backdropFilter: 'blur(8px)',
                         marginBottom: '8px',
                         minWidth: '180px',
@@ -358,9 +370,13 @@ const GameArea: React.FC<GameAreaProps> = ({ positions, playerStatus, currentLig
                     </div>
                     {/* Team B Players */}
                     <div className="px-4 py-3 rounded-lg" style={{
-                        background: 'rgba(147, 51, 234, 0.6)',
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                        border: '2px solid rgba(255,255,255,0.2)',
+                        background: 'rgba(147, 51, 234, 0.6)', // 모든 컨셉 동일한 투명도
+                        boxShadow: themeRound === 3
+                            ? '0 2px 8px rgba(0,0,0,0.2), 0 0 15px rgba(147, 51, 234, 0.3)' // 우주에서는 네온 효과
+                            : '0 2px 8px rgba(0,0,0,0.1)', // 숲, 바다는 기존 그림자
+                        border: themeRound === 3
+                            ? '2px solid rgba(255, 0, 255, 0.5)' // 우주에서는 마젠타색 테두리
+                            : '2px solid rgba(255,255,255,0.2)', // 숲, 바다는 흰색 테두리
                         backdropFilter: 'blur(6px)',
                         minWidth: '120px',
                         textAlign: 'center'

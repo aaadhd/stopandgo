@@ -131,32 +131,55 @@ const QuizModal: React.FC<QuizModalProps> = ({ quiz, isLoading, winnerTeam, onAn
     return (
         <div className={`absolute inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center z-[60] transition-opacity duration-500 ${isExiting ? 'opacity-0' : 'opacity-100'}`}>
             <div className={`w-[90%] max-w-6xl min-h-[80%] bg-white rounded-2xl shadow-2xl flex flex-col p-10 relative transition-transform duration-500 ${isExiting ? 'scale-90' : 'scale-100'} animate-pop-in ${isLocked ? 'quiz-locked' : ''}`}>
-                <div className="absolute top-6 right-10 flex items-center gap-2 text-3xl font-bold text-amber-500">
-                     <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.414-1.415L11 9.586V6z" clipRule="evenodd" /></svg>
-                     <span className="w-12 text-left">{timeLeft}</span>
-                </div>
 
-                <div className={`text-3xl font-bold text-center mb-4 ${teamColor.name}`} style={{ fontFamily: "'Fredoka One', cursive" }}>
-                    {winnerTeam === 'red' ? 'Team A' : 'Team B'}'s Quiz!
+                {/* 상단 헤더 */}
+                <div className="flex justify-between items-center mb-8">
+                    <div className={`text-2xl font-bold ${teamColor.name}`}>
+                        {winnerTeam === 'red' ? 'Team A' : 'Team B'}'s Chance!
+                    </div>
+                    <div className="flex items-center gap-2 text-2xl font-bold text-cyan-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" viewBox="0 0 20 20" fill="currentColor">
+                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.414-1.415L11 9.586V6z" clipRule="evenodd" />
+                        </svg>
+                        <span className="w-8 text-left">{timeLeft}</span>
+                    </div>
                 </div>
 
                 {isLoading ? (
                     <div className="text-3xl text-center">Generating a fun question...</div>
                 ) : (
                     <>
-                        <h2 className="text-5xl font-bold text-center text-gray-800 mb-4">{quiz.question}</h2>
+                        {/* 문제 영역 - 넓게 잡아서 공간 효율적으로 사용 */}
+                        <div className="flex-1 flex flex-col justify-center mb-8">
+                            <h2 className="text-5xl font-bold text-center text-gray-800 leading-tight">
+                                {quiz.question}
+                            </h2>
+                        </div>
                         
-                        <div className="grid grid-cols-2 gap-4">
-                            {quiz.answers.map((answer, index) => (
-                                <button 
-                                    key={index} 
-                                    className={`quiz-btn ${isLocked ? (answer === quiz.correctAnswer ? 'correct-answer' : (userAnswer === answer ? 'incorrect-answer' : '')) : ''}`} 
-                                    onClick={() => handleAnswerClick(answer === quiz.correctAnswer, answer)}
-                                    disabled={isLocked}
-                                >
-                                    {answer}
-                                </button>
-                            ))}
+                        {/* 보기 영역 - 하단에 고정 */}
+                        <div className="mt-auto">
+                            <div className="grid grid-cols-2 gap-6">
+                                {quiz.answers.map((answer, index) => (
+                                    <button 
+                                        key={index} 
+                                        className={`px-6 py-4 text-xl font-semibold rounded-xl border-2 transition-all duration-200 ${
+                                            isLocked 
+                                                ? (answer === quiz.correctAnswer 
+                                                    ? 'bg-green-100 border-green-500 text-green-700' 
+                                                    : (userAnswer === answer 
+                                                        ? 'bg-red-100 border-red-500 text-red-700' 
+                                                        : 'bg-gray-50 border-gray-300 text-gray-600'))
+                                                : (userAnswer === answer
+                                                    ? 'bg-blue-50 border-blue-500 text-blue-700'
+                                                    : 'bg-white border-gray-300 text-gray-800 hover:border-gray-400 hover:bg-gray-50')
+                                        }`}
+                                        onClick={() => handleAnswerClick(answer === quiz.correctAnswer, answer)}
+                                        disabled={isLocked}
+                                    >
+                                        {answer}
+                                    </button>
+                                ))}
+                            </div>
                         </div>
                     </>
                 )}
