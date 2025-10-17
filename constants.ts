@@ -2,7 +2,7 @@
 import { PlayerStatus, PlayerStatuses } from './types';
 
 export const MAX_ROUNDS = 5;
-export const ROUND_TIME_LIMIT = 15;
+export const ROUND_TIME_LIMIT = 5;
 export const FINISH_POSITION = 88;
 export const MOVE_AMOUNT = 4;
 export const BOOST_MULTIPLIER = 2.5;
@@ -12,24 +12,24 @@ export const MIN_ITEM_DISTANCE = 15; // Minimum distance between spawned items
 
 export const TEAM_COLORS = {
     red: {
-        primary: '#FF5E5E',
-        bg: '#FFEBEB',
-        text: 'text-[#FF5E5E]',
-        bgClass: 'bg-[#FF5E5E]',
-        bgLight: 'bg-[#FFEBEB]',
-        border: 'border-[#FF5E5E]',
-        hoverBgLight: 'hover:bg-[#FFEBEB]',
-        hoverBorder: 'hover:border-[#FF5E5E]',
+        primary: '#0891b2',
+        bg: '#ecfeff',
+        text: 'text-[#0891b2]',
+        bgClass: 'bg-[#0891b2]',
+        bgLight: 'bg-[#ecfeff]',
+        border: 'border-[#0891b2]',
+        hoverBgLight: 'hover:bg-[#ecfeff]',
+        hoverBorder: 'hover:border-[#0891b2]',
     },
     blue: {
-        primary: '#5B9DFF',
-        bg: '#EBF5FF',
-        text: 'text-[#5B9DFF]',
-        bgClass: 'bg-[#5B9DFF]',
-        bgLight: 'bg-[#EBF5FF]',
-        border: 'border-[#5B9DFF]',
-        hoverBgLight: 'hover:bg-[#EBF5FF]',
-        hoverBorder: 'hover:border-[#5B9DFF]',
+        primary: '#9333ea',
+        bg: '#faf5ff',
+        text: 'text-[#9333ea]',
+        bgClass: 'bg-[#9333ea]',
+        bgLight: 'bg-[#faf5ff]',
+        border: 'border-[#9333ea]',
+        hoverBgLight: 'hover:bg-[#faf5ff]',
+        hoverBorder: 'hover:border-[#9333ea]',
     },
 };
 

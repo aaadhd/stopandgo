@@ -1,62 +1,149 @@
-import React, { useLayoutEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { GamePhase } from './types';
 import { useGameLogic } from './hooks/useGameLogic';
-import InfoBar from './components/InfoBar';
+import GameHeader from './components/GameHeader';
 import GameArea from './components/GameArea';
 import Controls from './components/Controls';
 import StartModal from './components/modals/StartModal';
 import RoundModal from './components/modals/RoundModal';
 import QuizModal from './components/modals/QuizModal';
 import GameOverModal from './components/modals/GameOverModal';
+import MenuModal from './components/modals/MenuModal';
+import GameSettingsModal from './components/modals/GameSettingsModal';
+import PausedOverlay from './components/modals/PausedOverlay';
+import TeamSetupScreen from './components/modals/TeamSetupScreen';
 
 export default function App(): React.ReactNode {
-    const { gameState, gameActions } = useGameLogic();
-    const stageRef = useRef<HTMLDivElement>(null);
-
-    useLayoutEffect(() => {
-        const updateScale = () => {
-            const stage = stageRef.current;
-            if (stage) {
-                const scale = Math.min(window.innerWidth / 1280, window.innerHeight / 800);
-                stage.style.transform = `scale(${scale})`;
-            }
-        };
-
-        window.addEventListener('resize', updateScale);
-        updateScale(); // Initial scale
-
-        return () => window.removeEventListener('resize', updateScale);
-    }, []);
+    const { gameState, teams, gameActions } = useGameLogic();
+    const [showSplash, setShowSplash] = useState(false);
+    const [isSplashFadingOut, setIsSplashFadingOut] = useState(false);
+    const [isAnimating, setIsAnimating] = useState(true);
+    const splashTimerRef = useRef<NodeJS.Timeout | null>(null);
 
     const {
         gamePhase, scores, currentRound, timeLeft, positions,
-        playerStatus, currentLight, items, roundEndState, quiz, isQuizLoading, currentWinner
+        playerStatus, currentLight, items, roundEndState, quiz, isQuizLoading, currentWinner,
+        showSettings
     } = gameState;
 
-    const showGameUI = gamePhase !== GamePhase.START && gamePhase !== GamePhase.GAME_OVER;
+    // 설정에서 Play를 누르면 스플래시 화면 표시
+    useEffect(() => {
+        if (gamePhase === GamePhase.START && !showSettings) {
+            setShowSplash(true);
+            setIsSplashFadingOut(false);
+            splashTimerRef.current = setTimeout(() => {
+                // 먼저 페이드아웃 시작
+                setIsSplashFadingOut(true);
+                // 페이드아웃 애니메이션 완료 후 팀 배정 화면으로 전환
+                setTimeout(() => {
+                    setShowSplash(false);
+                    gameActions.startTeamSetup();
+                }, 500); // 페이드아웃 애니메이션 시간
+            }, 2000);
+        }
+
+        return () => {
+            if (splashTimerRef.current) {
+                clearTimeout(splashTimerRef.current);
+                splashTimerRef.current = null;
+            }
+        };
+    }, [gamePhase, showSettings, gameActions]);
+
+    // 화면 전환 시 애니메이션 트리거 (스플래시 페이드아웃 중에는 트리거하지 않음)
+    useEffect(() => {
+        if (!isSplashFadingOut) {
+            setIsAnimating(false);
+            const timer = setTimeout(() => setIsAnimating(true), 50);
+            return () => clearTimeout(timer);
+        }
+    }, [gamePhase, showSettings, showSplash, isSplashFadingOut]);
+
+    const showGameUI = gamePhase !== GamePhase.GAME_OVER;
+    const isPlayingPhase = gamePhase === GamePhase.PLAYING;
+    const isNonPlayingPhase = [GamePhase.START, GamePhase.ROUND_START, GamePhase.ROUND_END, GamePhase.QUIZ, GamePhase.GAME_OVER].includes(gamePhase);
+    const buttonsDisabled = gameState.isPaused || gameState.showMenu;
+
+    // 설정 화면 표시
+    if (showSettings) {
+        return (
+            <div
+                className={`w-full h-full bg-white shadow-lg relative overflow-hidden screen-transition-enter ${isAnimating ? 'screen-transition-enter-active' : ''}`}
+            >
+                <GameSettingsModal
+                    onStart={gameActions.startGameWithSettings}
+                    onBack={gameActions.hideSettingsScreen}
+                />
+            </div>
+        );
+    }
+
+    if (showSplash) {
+        return (
+            <div
+                className={`w-full h-full bg-white shadow-lg relative overflow-hidden flex items-center justify-center ${
+                    isSplashFadingOut
+                        ? 'fade-transition-exit fade-transition-exit-active'
+                        : ''
+                }`}
+            >
+                <img
+                    src="/stopandgo.png"
+                    alt="Stop & Go Race"
+                    className="w-full h-full object-cover"
+                />
+            </div>
+        );
+    }
+
+    // 팀 배정 화면 표시
+    if (gamePhase === GamePhase.TEAM_SETUP && !showSplash) {
+        return (
+            <div
+                className={`w-full h-full bg-white shadow-lg relative overflow-hidden fade-transition-enter ${isAnimating ? 'fade-transition-enter-active' : ''}`}
+            >
+                <TeamSetupScreen
+                    teams={teams}
+                    onShuffle={gameActions.shuffleTeamsAction}
+                    onStart={gameActions.startGameFromTeamSetup}
+                    onTeamsChange={gameActions.handleTeamsChange}
+                />
+            </div>
+        );
+    }
 
     return (
         <div
-            ref={stageRef}
-            style={{ transformOrigin: 'top center' }}
-            className="w-[1280px] h-[800px] bg-white rounded-3xl shadow-lg relative overflow-hidden flex flex-col mx-auto"
+            className="w-full h-full bg-white shadow-lg relative overflow-hidden flex flex-col"
         >
             {showGameUI && (
-                <InfoBar
-                    scores={scores}
+                <GameHeader
+                    title="Stop & Go"
                     currentRound={currentRound}
-                    timeLeft={timeLeft}
+                    showTimer={isPlayingPhase && !gameState.isPaused}
+                    timerValue={timeLeft}
+                    showPause={isPlayingPhase}
+                    isPaused={gameState.isPaused}
+                    onPause={gameState.isPaused ? gameActions.resumeGame : gameActions.pauseGame}
+                    showMenuButton={isPlayingPhase}
+                    onOpenMenu={gameActions.openMenu}
+                    showExitButton={isNonPlayingPhase && gamePhase !== GamePhase.GAME_OVER}
+                    onExit={gameActions.exitGame}
+                    buttonsDisabled={buttonsDisabled}
                 />
             )}
 
-            {showGameUI && (
-                <GameArea
-                    positions={positions}
-                    playerStatus={playerStatus}
-                    currentLight={currentLight}
-                    items={items}
-                />
-            )}
+                        {showGameUI && (
+                            <GameArea
+                                positions={positions}
+                                playerStatus={playerStatus}
+                                currentLight={currentLight}
+                                items={items}
+                                scores={scores}
+                                currentRound={currentRound}
+                                teams={teams}
+                            />
+                        )}
 
             {showGameUI && (
                 <Controls
@@ -68,15 +155,18 @@ export default function App(): React.ReactNode {
             )}
 
             {gamePhase === GamePhase.START && (
-                <StartModal onStart={gameActions.startGame} />
+                <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <StartModal onStart={gameActions.startGame} />
+                </div>
             )}
 
             {gamePhase === GamePhase.ROUND_START && (
                 <RoundModal
-                    title={`Round ${currentRound} Start!`}
+                    title={`Round ${currentRound}`}
                     text="Watch the traffic light carefully and go!"
                     buttonText="Ready, Set, Go!"
                     onNext={gameActions.playRound}
+                    isCountdown={true}
                 />
             )}
 
@@ -84,7 +174,7 @@ export default function App(): React.ReactNode {
                 <RoundModal
                     title={roundEndState.title}
                     text={roundEndState.text}
-                    buttonText={currentRound >= 12 ? 'See Final Results' : 'Next Round'}
+                    buttonText={currentRound >= 5 ? 'See Final Results' : 'Next Round'}
                     onNext={roundEndState.nextAction}
                     isSuccess={roundEndState.isSuccess}
                 />
@@ -94,13 +184,25 @@ export default function App(): React.ReactNode {
                 <QuizModal
                     quiz={quiz}
                     isLoading={isQuizLoading}
-                    winnerTeam={currentWinner || 'red'}
+                    winnerTeam={currentWinner}
                     onAnswer={gameActions.handleQuizAnswer}
                 />
             )}
 
             {gamePhase === GamePhase.GAME_OVER && (
                 <GameOverModal scores={scores} onPlayAgain={gameActions.resetGame} />
+            )}
+
+            {gameState.isPaused && !gameState.showMenu && (
+                <PausedOverlay onResume={gameActions.resumeGame} />
+            )}
+
+            {gameState.showMenu && (
+                <MenuModal
+                    onResume={gameActions.closeMenu}
+                    onEndGame={gameActions.endGameFromMenu}
+                    onExit={gameActions.exitGame}
+                />
             )}
         </div>
     );

@@ -10,9 +10,12 @@ type InfoBarProps = {
 
 const ScoreDisplay: React.FC<{ team: Team; score: number }> = ({ team, score }) => {
     const color = TEAM_COLORS[team];
+    const teamName = team === 'red' ? 'Team A' : 'Team B';
     return (
-        <div className={`text-4xl font-bold py-2 px-5 rounded-2xl ${color.text} ${color.bgLight}`}>
-            {team.charAt(0).toUpperCase() + team.slice(1)}: {score}
+        <div className={`text-4xl font-bold py-2 px-5 rounded-2xl ${color.bgLight}`}>
+            <span className={color.text}>{teamName}</span>
+            <span className="text-gray-800">: </span>
+            <span className="text-yellow-600 font-black">{score}</span>
         </div>
     );
 };

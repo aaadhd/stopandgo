@@ -8,6 +8,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "deploy": "npm run build && netlify deploy --dir=dist --prod",
+    "start": "vite preview",
     "ship": "git add . && git commit -m 'update' && git push"
   },
   "dependencies": {

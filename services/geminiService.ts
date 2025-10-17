@@ -2,13 +2,13 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { Quiz } from '../types';
 
-const API_KEY = process.env.API_KEY;
+const API_KEY = import.meta.env.VITE_API_KEY;
 
 if (!API_KEY) {
-  console.warn("API_KEY environment variable not set. Using fallback quiz questions.");
+  console.warn("VITE_API_KEY environment variable not set. Using fallback quiz questions.");
 }
 
-const ai = new GoogleGenAI({ apiKey: API_KEY! });
+const ai = API_KEY ? new GoogleGenAI({ apiKey: API_KEY }) : null;
 
 const schema = {
   type: Type.OBJECT,
@@ -30,22 +30,27 @@ const schema = {
   required: ["question", "answers", "correctAnswer"]
 };
 
+// Fallback quiz pool - used when API is not available or fails
+const FALLBACK_QUIZZES: Quiz[] = [
+    { question: "What color is a banana?", answers: ["Red", "Yellow", "Blue", "Green"], correctAnswer: "Yellow" },
+    { question: "How many wheels are on a bicycle?", answers: ["2", "3", "4", "5"], correctAnswer: "2" },
+    { question: "What animal says 'Moo'?", answers: ["Cat", "Dog", "Cow", "Bird"], correctAnswer: "Cow" },
+    { question: "How many legs does a spider have?", answers: ["6", "8", "10", "12"], correctAnswer: "8" },
+    { question: "What do bees make?", answers: ["Honey", "Milk", "Cheese", "Butter"], correctAnswer: "Honey" },
+    { question: "What is the color of snow?", answers: ["Black", "White", "Red", "Blue"], correctAnswer: "White" },
+    { question: "How many days are in a week?", answers: ["5", "6", "7", "8"], correctAnswer: "7" },
+    { question: "What do fish live in?", answers: ["Air", "Water", "Sand", "Trees"], correctAnswer: "Water" },
+    { question: "What shape has three sides?", answers: ["Circle", "Square", "Triangle", "Rectangle"], correctAnswer: "Triangle" },
+    { question: "What do we use to write?", answers: ["Fork", "Pencil", "Spoon", "Cup"], correctAnswer: "Pencil" }
+];
+
+function getRandomFallbackQuiz(): Quiz {
+    return FALLBACK_QUIZZES[Math.floor(Math.random() * FALLBACK_QUIZZES.length)];
+}
+
 export async function generateQuizQuestion(): Promise<Quiz> {
-  if (!API_KEY) {
-    // Fallback for when API key is not available
-    const fallbackQuizzes: Quiz[] = [
-        { question: "What color is a banana?", answers: ["Red", "Yellow", "Blue", "Green"], correctAnswer: "Yellow" },
-        { question: "How many wheels are on a bicycle?", answers: ["2", "3", "4", "5"], correctAnswer: "2" },
-        { question: "What animal says 'Moo'?", answers: ["Cat", "Dog", "Cow", "Bird"], correctAnswer: "Cow" },
-        { question: "How many legs does a spider have?", answers: ["6", "8", "10", "12"], correctAnswer: "8" },
-        { question: "What do bees make?", answers: ["Honey", "Milk", "Cheese", "Butter"], correctAnswer: "Honey" },
-        { question: "What is the color of snow?", answers: ["Black", "White", "Red", "Blue"], correctAnswer: "White" },
-        { question: "How many days are in a week?", answers: ["5", "6", "7", "8"], correctAnswer: "7" },
-        { question: "What do fish live in?", answers: ["Air", "Water", "Sand", "Trees"], correctAnswer: "Water" },
-        { question: "What shape has three sides?", answers: ["Circle", "Square", "Triangle", "Rectangle"], correctAnswer: "Triangle" },
-        { question: "What do we use to write?", answers: ["Fork", "Pencil", "Spoon", "Cup"], correctAnswer: "Pencil" }
-    ];
-    return fallbackQuizzes[Math.floor(Math.random() * fallbackQuizzes.length)];
+  if (!API_KEY || !ai) {
+    return getRandomFallbackQuiz();
   }
 
   try {
@@ -57,7 +62,7 @@ export async function generateQuizQuestion(): Promise<Quiz> {
         responseSchema: schema,
       },
     });
-    
+
     const text = response.text.trim();
     const quizData = JSON.parse(text);
 
@@ -75,19 +80,6 @@ export async function generateQuizQuestion(): Promise<Quiz> {
     return quizData as Quiz;
   } catch (error) {
     console.error("Error generating quiz question from Gemini API:", error);
-    // Fall back to a random quiz from our pool
-    const fallbackQuizzes: Quiz[] = [
-        { question: "What color is a banana?", answers: ["Red", "Yellow", "Blue", "Green"], correctAnswer: "Yellow" },
-        { question: "How many wheels are on a bicycle?", answers: ["2", "3", "4", "5"], correctAnswer: "2" },
-        { question: "What animal says 'Moo'?", answers: ["Cat", "Dog", "Cow", "Bird"], correctAnswer: "Cow" },
-        { question: "How many legs does a spider have?", answers: ["6", "8", "10", "12"], correctAnswer: "8" },
-        { question: "What do bees make?", answers: ["Honey", "Milk", "Cheese", "Butter"], correctAnswer: "Honey" },
-        { question: "What is the color of snow?", answers: ["Black", "White", "Red", "Blue"], correctAnswer: "White" },
-        { question: "How many days are in a week?", answers: ["5", "6", "7", "8"], correctAnswer: "7" },
-        { question: "What do fish live in?", answers: ["Air", "Water", "Sand", "Trees"], correctAnswer: "Water" },
-        { question: "What shape has three sides?", answers: ["Circle", "Square", "Triangle", "Rectangle"], correctAnswer: "Triangle" },
-        { question: "What do we use to write?", answers: ["Fork", "Pencil", "Spoon", "Cup"], correctAnswer: "Pencil" }
-    ];
-    return fallbackQuizzes[Math.floor(Math.random() * fallbackQuizzes.length)];
+    return getRandomFallbackQuiz();
   }
 }

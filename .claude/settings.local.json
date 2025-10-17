@@ -12,7 +12,8 @@
       "Bash(node_modules/.bin/vite:*)",
       "Bash(\"./node_modules/.bin/vite\")",
       "Bash(taskkill:*)",
-      "Bash(npx tsc:*)"
+      "Bash(npx tsc:*)",
+      "Bash(start index.html)"
     ],
     "additionalDirectories": [
       "C:\\"

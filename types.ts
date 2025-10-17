@@ -3,6 +3,7 @@ export type Team = 'red' | 'blue';
 
 export enum GamePhase {
     START = 'START',
+    TEAM_SETUP = 'TEAM_SETUP',
     ROUND_START = 'ROUND_START',
     PLAYING = 'PLAYING',
     QUIZ = 'QUIZ',
@@ -49,6 +50,37 @@ export type RoundEndState = {
     nextAction: () => void;
 };
 
+export type GameSettings = {
+  selectedLessons: number[];
+  learningFocus: string[];
+  gameMode: 'teams' | 'solo';
+  questionOrder: 'same' | 'randomized';
+  rounds: number;
+  totalTime: number; // minutes
+};
+
+// 팀 세팅 관련 타입 정의
+export type TeamColor = 'blue' | 'red';
+
+export interface Player {
+  id: string;
+  name: string;
+  avatarEmoji: string;
+  team: TeamColor;
+}
+
+export interface Teams {
+  blue: Player[];
+  red: Player[];
+}
+
+// 드래그 앤 드롭 관련 타입
+export interface DragItem {
+  player: Player;
+  sourceTeam: TeamColor;
+  sourceIndex: number;
+}
+
 export type GameState = {
     gamePhase: GamePhase;
     scores: { [key in Team]: number };
@@ -62,4 +94,7 @@ export type GameState = {
     quiz: Quiz | null;
     isQuizLoading: boolean;
     currentWinner: Team | null;
+    isPaused: boolean;
+    showMenu: boolean;
+    showSettings: boolean;
 };

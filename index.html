@@ -8,13 +8,354 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
     <style>
+      :root{
+        --W: 854px; 
+        --H: 600px;
+        /* Clean Vivid Palette for 7-year-olds */
+        --soil-1: #F2B36C;   /* 따뜻한 베이지 */
+        --soil-2: #E8A858;   /* 밝은 골드 */
+        --grain:  rgba(200,130,80,.2); /* 부드러운 나무 음영 */
+        --moss:   #49D86D;   /* 밝은 녹색 */
+        --leaf:   #5FE87D;   /* 생생한 연두 */
+        --shadow: rgba(0,0,0,.15);
+        
+        /* 추가 Vivid 팔레트 */
+        --bright-green: #49D86D;
+        --sunny-yellow: #FFD84C;
+        --sky-blue: #42BFFF;
+        --coral-red: #FF5D5D;
+        --warm-beige: #F2B36C;
+      }
+
       body {
-        font-family: 'Baloo 2', sans-serif;
+        font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif;
         user-select: none;
         margin: 0;
+        padding: 0;
         background-color: #87CEEB; /* Sky Blue */
-        overflow: hidden; /* Hide scrollbars */
+        overflow: auto; /* 스크롤 허용 */
+        min-height: 100vh;
+        position: relative;
+      }
+
+      /* 중앙 일자길 */
+      .trail{
+        position: absolute;
+        top: -50px; /* 상단으로 50px 더 올려서 완전히 닿도록 */
+        left: 50%;
+        transform: translateX(-50%);
+        width: 800px; /* 고정 너비 800px */
+        height: 120%; /* 높이를 줄여서 플레이어가 보이도록 */
+        border-radius: 0;
+        z-index: 20; /* Round 1 텍스트 위로 표시 */
+
+        /* 기본 숲 테마만 적용 (바다/우주 테마는 각각의 클래스에서 덮어씀) */
+        background:
+          /* 7. 못 (밝고 선명한 톤) */
+          radial-gradient(circle 3.5px at 3% 8%, rgba(80,60,50,.45) 0%, rgba(100,75,60,.5) 30%, rgba(120,90,70,.35) 60%, transparent 100%) 0 26px/800px 52px,
+          radial-gradient(circle 3px at 4% 60%, rgba(85,65,55,.5) 0%, rgba(105,80,65,.55) 35%, rgba(115,85,70,.4) 65%, transparent 100%) 0 32px/800px 52px,
+          radial-gradient(circle 3.8px at 2.5% 112%, rgba(80,60,50,.45) 0%, rgba(100,75,60,.5) 30%, rgba(120,90,70,.35) 60%, transparent 100%) 0 18px/800px 52px,
+          radial-gradient(circle 3.2px at 97% 15%, rgba(85,65,55,.5) 0%, rgba(105,80,65,.55) 35%, rgba(115,85,70,.4) 65%, transparent 100%) 0 28px/800px 52px,
+          radial-gradient(circle 3.6px at 96.5% 68%, rgba(80,60,50,.45) 0%, rgba(100,75,60,.5) 30%, rgba(120,90,70,.35) 60%, transparent 100%) 0 35px/800px 52px,
+          radial-gradient(circle 3.3px at 98% 120%, rgba(85,65,55,.5) 0%, rgba(105,80,65,.55) 35%, rgba(115,85,70,.4) 65%, transparent 100%) 0 22px/800px 52px,
+          /* 6. 이끼 패치 (생생한 녹색) */
+          radial-gradient(ellipse 24px 20px at 18% 28%, var(--moss) 0%, transparent 65%) 0 0/350px 320px,
+          radial-gradient(ellipse 28px 22px at 82% 62%, var(--leaf) 0%, transparent 65%) 0 0/380px 340px,
+          radial-gradient(ellipse 20px 16px at 52% 15%, rgba(242,179,108,.3) 0%, transparent 65%) 0 0/290px 260px,
+          radial-gradient(ellipse 22px 18px at 35% 85%, rgba(232,168,88,.25) 0%, transparent 65%) 0 0/310px 280px,
+          /* 5. 부드러운 입체감 (flat 2.5D) */
+          radial-gradient(ellipse 75% 100% at 50% 50%, rgba(255,255,255,.15) 0%, transparent 60%, rgba(0,0,0,.12) 100%),
+          /* 4. 나무결 (미묘한 가로 결) */
+          repeating-linear-gradient(0deg,
+            transparent 0 8px,
+            rgba(200,130,80,.05) 8px 9px,
+            transparent 9px 18px,
+            rgba(220,150,90,.04) 18px 19px,
+            transparent 19px 32px
+          ),
+          /* 3. 나무 판재 경계 (깔끔하고 선명) */
+          repeating-linear-gradient(0deg,
+            transparent 0 24px,
+            rgba(200,130,80,.15) 24px 25.5px,
+            rgba(220,150,100,.12) 25.5px 27px,
+            rgba(200,130,80,.13) 27px 28px,
+            transparent 28px 52px
+          ),
+          /* 2. 하이라이트 (상단만 밝게) */
+          linear-gradient(180deg, rgba(255,255,255,.2) 0%, transparent 30%),
+          /* 1. 더 어둡고 깊이감 있는 베이스 */
+          linear-gradient(180deg, #E2A65F 0%, #D4964A 50%, #C0853A 100%);
+
+        /* 좌우측 입체감 복원 */
+        box-shadow:
+          inset 12px 0 20px -8px rgba(0,0,0,.18),
+          inset -12px 0 20px -8px rgba(0,0,0,.18);
+
+        /* 깊이감 제거 */
+        filter: none;
+        
+        /* 트랙 가장자리 그라데이션 제거 */
+        position: relative;
+      }
+
+
+      /* SEA THEME - Round 2 */
+      .sea .trail{
+        width: 800px;  /* 고정 너비 800px */
+        border-radius: 0;
+
+        /* 바다 터널 - 올바른 레이어 순서 */
+        background:
+          /* 1) 베이스 - 깊은 해저 베이스 (가장 아래) */
+          linear-gradient(180deg, #1a5f7a, #0f4a63 70%, #0a3d52),
+          /* 2) 모래색 베이스 */
+          radial-gradient(140% 100% at 50% 0%, #E2A65F 0, #D4964A 60%, #C0853A 100%),
+          /* 3) 유리벽 반사 */
+          linear-gradient(to right, 
+            rgba(255,255,255,.4) 0%, 
+            rgba(255,255,255,.1) 8%, 
+            transparent 15% 85%, 
+            rgba(255,255,255,.1) 92%, 
+            rgba(255,255,255,.4) 100%),
+          /* 4) 깊은 해저 물색 그라데이션 */
+          linear-gradient(180deg, 
+            rgba(26,95,122,.4) 0%, 
+            rgba(15,74,99,.5) 30%, 
+            rgba(10,61,82,.6) 70%, 
+            transparent 100%),
+          /* 5) 수면 반사 */
+          radial-gradient(ellipse 200px 50px at 30% 20%, rgba(255,255,255,.2) 0%, transparent 60%),
+          radial-gradient(ellipse 150px 40px at 70% 60%, rgba(255,255,255,.15) 0%, transparent 60%),
+          /* 6) 물결 패턴 */
+          repeating-linear-gradient(45deg,
+            transparent 0 15px,
+            rgba(255,255,255,.15) 15px 16px,
+            transparent 16px 30px
+          ),
+          /* 7) 모래/산호 파편 */
+          radial-gradient(3px 2px at 24% 12%, rgba(214,134,120,.55) 45%, transparent 46%) 0 0/34px 28px,
+          radial-gradient(2px 2px at 70% 40%, rgba(255,246,189,.55) 45%, transparent 46%) 0 0/28px 26px,
+          radial-gradient(2px 2px at 38% 72%, rgba(128,206,212,.45) 45%, transparent 46%) 0 0/40px 34px,
+          linear-gradient(0deg, rgba(255,255,255,.18) 0 8%, transparent 8% 22%) center/100% 36px repeat-y,
+          /* 8) 물속 미세 입자 (가장 위) */
+          radial-gradient(circle 1.5px at 15% 20%, rgba(255,255,255,.5) 0%, transparent 100%) 0 0/40px 60px,
+          radial-gradient(circle 1.5px at 85% 30%, rgba(200,255,255,.6) 0%, transparent 100%) 0 0/50px 70px,
+          radial-gradient(circle 1.5px at 45% 80%, rgba(255,255,255,.4) 0%, transparent 100%) 0 0/35px 45px;
+        box-shadow: 
+          /* 좌우측 유리 터널 입체감 복원 */
+          inset 8px 0 20px -5px rgba(0,0,0,.2),
+          inset -8px 0 20px -5px rgba(0,0,0,.2),
+          /* 깊은 해저 글로우 */
+          0 0 40px rgba(26,95,122,.6);
+        filter: none;
+        
+        /* 트랙 가장자리 그라데이션 제거 */
+        position: relative;
+      }
+
+      /* 산호/해초 가장자리 */
+      .sea .trail::after{
+        width: 40px;
+        background:
+          radial-gradient(14px 10px at 20% 12%, #ffb4a2 42%, transparent 46%) 0 0/48px 44px,
+          radial-gradient(10px 8px  at 70% 30%, #77d3cf 42%, transparent 46%) 0 0/40px 36px,
+          radial-gradient(8px 6px   at 40% 70%, #cbe8a0 42%, transparent 46%) 0 0/46px 42px;
+        filter: blur(1px) saturate(1.05);
+        mix-blend-mode:multiply;
+      }
+      .sea .trail::before{ left: 0; }
+      .sea .trail::after { right: 0; }
+
+      /* 바다 터널 - 최고 우선순위 선택자 */
+      .fishway.glass .trail, .fishway .glass .trail, .fishway .trail, div.fishway.glass .trail, div.fishway .glass .trail, div.fishway .trail{
+        width: 800px;
+        border-radius: 0;
+        /* 바다 터널 - 최고 우선순위로 완전 덮어쓰기 */
+        background: 
+          /* 1) 베이스 - 깊은 해저 베이스 (가장 아래) */
+          linear-gradient(180deg, #1a5f7a, #0f4a63 70%, #0a3d52),
+          /* 2) 모래색 베이스 */
+          radial-gradient(140% 100% at 50% 0%, #E2A65F 0, #D4964A 60%, #C0853A 100%),
+          /* 3) 깊은 해저 물색 그라데이션 */
+          linear-gradient(180deg, 
+            rgba(26,95,122,.4) 0%, 
+            rgba(15,74,99,.5) 30%, 
+            rgba(10,61,82,.6) 70%, 
+            transparent 100%),
+          /* 4) 모래/산호 파편 */
+          radial-gradient(3px 2px at 24% 12%, rgba(214,134,120,.55) 45%, transparent 46%) 0 0/34px 28px,
+          radial-gradient(2px 2px at 70% 40%, rgba(255,246,189,.55) 45%, transparent 46%) 0 0/28px 26px,
+          radial-gradient(2px 2px at 38% 72%, rgba(128,206,212,.45) 45%, transparent 46%) 0 0/40px 34px,
+          linear-gradient(0deg, rgba(255,255,255,.18) 0 8%, transparent 8% 22%) center/100% 36px repeat-y,
+          /* 5) 물결 패턴 */
+          repeating-linear-gradient(45deg,
+            transparent 0 15px,
+            rgba(255,255,255,.15) 15px 16px,
+            transparent 16px 30px
+          ),
+          /* 6) 수면 반사 */
+          radial-gradient(ellipse 200px 50px at 30% 20%, rgba(255,255,255,.2) 0%, transparent 60%),
+          radial-gradient(ellipse 150px 40px at 70% 60%, rgba(255,255,255,.15) 0%, transparent 60%),
+          /* 7) 유리벽 반사 */
+          linear-gradient(to right, 
+            rgba(255,255,255,.4) 0%, 
+            rgba(255,255,255,.1) 8%, 
+            transparent 15% 85%, 
+            rgba(255,255,255,.1) 92%, 
+            rgba(255,255,255,.4) 100%),
+          /* 8) 물속 미세 입자 (가장 위) */
+          radial-gradient(circle 1.5px at 15% 20%, rgba(255,255,255,.5) 0%, transparent 100%) 0 0/40px 60px,
+          radial-gradient(circle 1.5px at 85% 30%, rgba(200,255,255,.6) 0%, transparent 100%) 0 0/50px 70px,
+          radial-gradient(circle 1.5px at 45% 80%, rgba(255,255,255,.4) 0%, transparent 100%) 0 0/35px 45px !important;
+        overflow:hidden;
+        /* 좌우측 입체감 복원 */
+        box-shadow:
+          inset 12px 0 20px -10px rgba(0,0,0,.22),
+          inset -12px 0 20px -10px rgba(0,0,0,.22),
+          0 0 18px rgba(26,95,122,.4);
+        filter: none;
+      }
+
+      /* 물 흐름 효과 */
+      .fishway.glass .trail::after, .fishway .glass .trail::after, .fishway .trail::after{
+        content:"";
+        position:absolute;
+        inset:0;
+        pointer-events:none;
+        /* 흐르는 물결 */
+        background:
+          repeating-linear-gradient(3deg,
+            transparent 0px,
+            rgba(255,255,255,.06) 15px,
+            rgba(255,255,255,.08) 30px,
+            rgba(255,255,255,.05) 45px,
+            transparent 55px,
+            transparent 120px
+          ),
+          repeating-linear-gradient(-5deg,
+            transparent 0px,
+            rgba(200,230,255,.05) 12px,
+            rgba(200,230,255,.07) 25px,
+            rgba(200,230,255,.04) 38px,
+            transparent 48px,
+            transparent 110px
+          );
+        opacity:.4; 
+        filter: blur(12px);
+        animation: waterFlow 18s linear infinite;
+        background-size: 100% 250%;
+        background-position: 0 0;
+      }
+
+      /* 애니메이션 */
+      @keyframes waterFlow{
+        from{ background-position: 0 100%; }
+        to  { background-position: 0 -150%; }
+      }
+
+      /* SPACE STATION THEME - Round 3 */
+      .space .trail{
+        width: 800px;
+        border-radius: 0;
+        /* 우주정거장 메탈릭 트랙 - 고완성도 */
+        background:
+          /* 8) 미세한 메탈릭 스크래치 */
+          repeating-linear-gradient(45deg,
+            transparent 0 2px,
+            rgba(255,255,255,.02) 2px 3px,
+            transparent 3px 8px
+          ),
+          /* 7) 메탈릭 브러시 마크 */
+          repeating-linear-gradient(135deg,
+            transparent 0 12px,
+            rgba(200,200,200,.03) 12px 13px,
+            transparent 13px 24px
+          ),
+          /* 6) 네온 라인 (사이드) */
+          linear-gradient(90deg, 
+            transparent 0%, 
+            rgba(0,255,255,.3) 2%, 
+            rgba(0,255,255,.6) 3%, 
+            transparent 4% 96%, 
+            rgba(0,255,255,.6) 97%, 
+            rgba(0,255,255,.3) 98%, 
+            transparent 100%),
+          /* 5) 에너지 필드 (더 강화) */
+          radial-gradient(ellipse 120% 60% at 50% 50%, rgba(0,255,255,.08) 0%, rgba(0,255,255,.03) 50%, transparent 80%),
+          /* 4) 메탈릭 패널 하이라이트 */
+          linear-gradient(90deg,
+            transparent 0%,
+            rgba(255,255,255,.1) 5%,
+            rgba(255,255,255,.05) 10%,
+            transparent 15% 85%,
+            rgba(255,255,255,.05) 90%,
+            rgba(255,255,255,.1) 95%,
+            transparent 100%
+          ),
+          /* 3) 메탈릭 하이라이트 (상단만 밝게) */
+          linear-gradient(180deg, 
+            rgba(240,240,240,.25) 0%, 
+            rgba(220,220,220,.15) 20%, 
+            rgba(200,200,200,.08) 40%, 
+            transparent 60%),
+          /* 2) 메탈릭 베이스 그라데이션 (더 풍부) */
+          linear-gradient(180deg, 
+            #7a7a7a 0%, 
+            #6a6a6a 20%, 
+            #5a5a5a 40%, 
+            #4a4a4a 60%, 
+            #3a3a3a 80%, 
+            #2a2a2a 100%),
+          /* 1) 메탈릭 메인 베이스 */
+          linear-gradient(180deg, #8a8a8a 0%, #7a7a7a 50%, #6a6a6a 100%);
+        /* 좌우측 메탈릭 입체감 + 에너지 글로우 복원 */
+        box-shadow: 
+          /* 좌측 메탈릭 입체감 */
+          inset 12px 0 20px -8px rgba(0,0,0,.4),
+          /* 우측 메탈릭 입체감 */
+          inset -12px 0 20px -8px rgba(0,0,0,.4),
+          /* 에너지 글로우 (더 강화) */
+          0 0 30px rgba(0,255,255,.4),
+          0 0 60px rgba(0,255,255,.2);
+        filter: none;
+        
+        /* 트랙 가장자리 그라데이션 제거 */
+        position: relative;
+      }
+
+
+      /* 점수 펄스 애니메이션 */
+      @keyframes score-pop{
+        0% { transform: scale(1); }
+        50% { transform: scale(1.15); }
+        100% { transform: scale(1); }
+      }
+      .score-pop { animation: score-pop 0.3s ease-out; }
+
+      /* 화면 흔들림 */
+      @keyframes screen-shake{
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-8px) rotate(-1deg); }
+        75% { transform: translateX(8px) rotate(1deg); }
+      }
+      .screen-shake { animation: screen-shake 0.5s; }
+
+      #stage {
+        width: 1280px;
+        height: 800px;
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform-origin: top center;
+        transform: translateX(-50%);
+        overflow: hidden;
+      }
+
+      #root {
+        width: 100%;
+        height: 100%;
       }
       @keyframes shield-pulse {
           0% { filter: drop-shadow(0 0 0 rgba(255, 255, 255, 0.7)); }
@@ -54,11 +395,11 @@
         100% { box-shadow: 0 0 8px var(--glow-color, transparent); }
       }
 
-      /* Boost Speedlines */
+      /* 강화된 Boost Speedlines */
       @keyframes speedlines-fade {
         0% { opacity: 0; transform: translate(-50%, -10px) scaleY(0.9); }
         20% { opacity: 1; }
-        100% { opacity: 0; transform: translate(-50%, -25px) scaleY(1.1); }
+        100% { opacity: 0; transform: translate(-50%, -30px) scaleY(1.2); }
       }
       .speedlines::before,
       .speedlines::after {
@@ -66,58 +407,79 @@
         position: absolute;
         left: 50%;
         transform: translateX(-50%);
-        width: 28px;
-        height: 50px;
-        border-radius: 14px;
-        background: linear-gradient(180deg, rgba(255,255,255,0.4), rgba(255,255,255,0));
-        filter: blur(1px);
-        animation: speedlines-fade 0.35s linear infinite;
+        width: 32px;
+        height: 60px;
+        border-radius: 16px;
+        background: linear-gradient(180deg, rgba(73,216,109,0.5), rgba(255,216,76,0.4), rgba(255,255,255,0));
+        filter: blur(2px);
+        animation: speedlines-fade 0.3s linear infinite;
         pointer-events: none;
+        box-shadow: 0 0 10px rgba(73,216,109,0.3);
       }
       .speedlines::after {
-        width: 18px;
-        height: 36px;
-        animation-delay: 0.15s;
+        width: 22px;
+        height: 42px;
+        animation-delay: 0.12s;
       }
 
-      /* Frozen Frost Ring */
+      /* 먼지 트레일 강화 */
+      @keyframes dust-puff {
+        0% { opacity: 0.5; transform: translate(-50%, 0) scale(0.8); }
+        50% { opacity: 0.3; }
+        100% { opacity: 0; transform: translate(-50%, 20px) scale(1.5); }
+      }
+      .dust-trail {
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        width: 30px;
+        height: 30px;
+        background: radial-gradient(circle, rgba(242,179,108,0.4), transparent 70%);
+        filter: blur(6px);
+        animation: dust-puff 0.6s ease-out infinite;
+        pointer-events: none;
+      }
+
+      /* 강화된 Frozen Frost Ring */
       @keyframes frost-ring {
-        0% { box-shadow: 0 0 0 0 rgba(173,216,230,0.9); }
-        50% { box-shadow: 0 0 18px 6px rgba(173,216,230,0.85); }
-        100% { box-shadow: 0 0 0 0 rgba(173,216,230,0.9); }
+        0% { box-shadow: 0 0 0 0 rgba(66,191,255,0.9), 0 0 0 0 rgba(173,216,230,0.6); }
+        50% { box-shadow: 0 0 20px 8px rgba(66,191,255,0.9), 0 0 35px 12px rgba(173,216,230,0.7); }
+        100% { box-shadow: 0 0 0 0 rgba(66,191,255,0.9), 0 0 0 0 rgba(173,216,230,0.6); }
       }
       .frost-ring {
         position: absolute;
-        top: -6px;
+        top: -8px;
         left: 50%;
         transform: translateX(-50%);
-        width: 54px;
-        height: 54px;
+        width: 60px;
+        height: 60px;
         border-radius: 9999px;
-        border: 2px solid rgba(200, 240, 255, 0.9);
-        backdrop-filter: blur(1px);
-        animation: frost-ring 1.2s ease-in-out infinite;
+        border: 3px solid rgba(200, 240, 255, 0.95);
+        backdrop-filter: blur(2px);
+        animation: frost-ring 1s ease-in-out infinite;
         pointer-events: none;
+        background: radial-gradient(circle, rgba(66,191,255,0.1), transparent 70%);
       }
 
-      /* Slow Mud Splash */
+      /* 강화된 Slow Mud Splash */
       @keyframes mud-splash {
-        0% { transform: translate(-50%, 0) scale(0.95); opacity: 0.6; }
-        50% { transform: translate(-50%, -4px) scale(1.05); opacity: 1; }
-        100% { transform: translate(-50%, 0) scale(0.95); opacity: 0.6; }
+        0% { transform: translate(-50%, 0) scale(0.9); opacity: 0.7; }
+        50% { transform: translate(-50%, -5px) scale(1.1); opacity: 1; }
+        100% { transform: translate(-50%, 0) scale(0.9); opacity: 0.7; }
       }
       .mud-splash {
         position: absolute;
-        bottom: -6px;
+        bottom: -8px;
         left: 50%;
         transform: translateX(-50%);
-        width: 46px;
-        height: 10px;
-        background: radial-gradient(ellipse at center, rgba(110, 66, 28, 0.85), rgba(110,66,28,0.0) 70%);
+        width: 52px;
+        height: 14px;
+        background: radial-gradient(ellipse at center, rgba(139,90,43, 0.9), rgba(160,110,60,0.5) 50%, transparent 75%);
         border-radius: 9999px;
-        filter: blur(0.5px);
-        animation: mud-splash 0.9s ease-in-out infinite;
+        filter: blur(1px);
+        animation: mud-splash 0.8s ease-in-out infinite;
         pointer-events: none;
+        box-shadow: 0 2px 6px rgba(110, 66, 28, 0.3);
       }
 
       /* Button Glow for GO */
@@ -298,6 +660,27 @@
         }
       }
 
+      /* Rabbit Atlas Animation */
+      @keyframes rabbit-run {
+        0% { background-position: 0px 0px; }
+        6.25% { background-position: -65px 0px; }
+        12.5% { background-position: -130px 0px; }
+        18.75% { background-position: -195px 0px; }
+        25% { background-position: 0px -92px; }
+        31.25% { background-position: -65px -92px; }
+        37.5% { background-position: -130px -92px; }
+        43.75% { background-position: -195px -92px; }
+        50% { background-position: 0px -184px; }
+        56.25% { background-position: -65px -184px; }
+        62.5% { background-position: -130px -184px; }
+        68.75% { background-position: -195px -184px; }
+        75% { background-position: 0px -276px; }
+        81.25% { background-position: -65px -276px; }
+        87.5% { background-position: -130px -276px; }
+        93.75% { background-position: -195px -276px; }
+        100% { background-position: 0px 0px; }
+      }
+
       @keyframes leg-run-left {
         0% { transform: rotate(20deg); }
         25% { transform: rotate(-10deg); }
@@ -337,17 +720,30 @@
         50% { transform: translateY(-25px) scale(1.2) rotate(10deg); }
       }
       
-      /* Confetti Animation */
-      @keyframes confetti-fall {
-        0% { transform: translateY(-100px) rotateZ(0deg); opacity: 1; }
-        100% { transform: translateY(800px) rotateZ(360deg); opacity: 0; }
+      /* 자연스러운 콘페티 폭발 효과 */
+      @keyframes confetti-natural {
+        0% { 
+          transform: translate(0, 0) scale(0.3) rotate(0deg); 
+          opacity: 1; 
+        }
+        20% { 
+          transform: translate(calc(var(--burst-x, 0) * 0.4), calc(var(--burst-y, 0) * 0.4)) scale(1) rotate(calc(var(--burst-rotation, 0) * 0.2)); 
+          opacity: 1; 
+        }
+        60% { 
+          transform: translate(calc(var(--burst-x, 0) * 0.8), calc(var(--burst-y, 0) * 0.8 + 20px * var(--burst-gravity, 1))) scale(0.8) rotate(calc(var(--burst-rotation, 0) * 0.6)); 
+          opacity: 0.7; 
+        }
+        100% { 
+          transform: translate(calc(var(--burst-x, 0) * 1.2), calc(var(--burst-y, 0) * 1.2 + 60px * var(--burst-gravity, 1))) scale(0.3) rotate(var(--burst-rotation, 0)); 
+          opacity: 0; 
+        }
       }
-      .confetti {
+      .confetti-natural {
         position: absolute;
-        top: 0;
-        width: 10px;
-        height: 10px;
-        animation: confetti-fall 3s linear infinite;
+        border-radius: 50%;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        animation: confetti-natural ease-out forwards;
       }
       
       /* GO Button Pulse Animation */
@@ -388,6 +784,165 @@
       .css-runner.running .runner-arm.right {
         animation: arm-run-right 0.4s infinite ease-in-out;
       }
+
+      /* 화면 전환 애니메이션 */
+      /* 페이드 전환 효과 */
+      @keyframes fadeTransition {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      @keyframes fadeTransitionExit {
+        from {
+          opacity: 1;
+        }
+        to {
+          opacity: 0;
+        }
+      }
+
+      .fade-transition-enter {
+        opacity: 0;
+      }
+
+      .fade-transition-enter-active {
+        animation: fadeTransition 0.5s ease-in-out forwards;
+      }
+
+      .fade-transition-exit {
+        opacity: 1;
+      }
+
+      .fade-transition-exit-active {
+        animation: fadeTransitionExit 0.5s ease-in-out forwards;
+      }
+
+      /* 스크린 전환 효과 (스케일 + 페이드) */
+      @keyframes screenTransition {
+        from {
+          opacity: 0;
+          transform: scale(0.95) translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1) translateY(0);
+        }
+      }
+
+      .screen-transition-enter {
+        opacity: 0;
+        transform: scale(0.95) translateY(20px);
+      }
+
+      .screen-transition-enter-active {
+        animation: screenTransition 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      }
+
+      /* 슬라이드 전환 효과 */
+      @keyframes slideTransition {
+        from {
+          opacity: 0;
+          transform: translateX(100%);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      .slide-transition-enter {
+        opacity: 0;
+        transform: translateX(100%);
+      }
+
+      .slide-transition-enter-active {
+        animation: slideTransition 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      }
+
+      /* 퀴즈 팝업 애니메이션 */
+      @keyframes pop-in {
+        0% {
+          opacity: 0;
+          transform: scale(0.8);
+        }
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      @keyframes pop-in-large {
+        0% {
+          opacity: 0;
+          transform: scale(0.5);
+        }
+        70% {
+          opacity: 1;
+          transform: scale(1.1);
+        }
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      .animate-pop-in {
+        animation: pop-in 0.3s ease-out forwards;
+      }
+
+      .animate-pop-in-large {
+        animation: pop-in-large 0.5s ease-out forwards;
+      }
+
+      /* 퀴즈 버튼 스타일 */
+      .quiz-btn {
+        background: #ffffff;
+        border: 3px solid rgba(0,0,0,0.1);
+        border-radius: 1.5rem;
+        padding: 2rem;
+        font-size: 1.875rem;
+        font-weight: bold;
+        color: #374151;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      }
+
+      .quiz-btn:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+      }
+
+      .quiz-btn:active:not(:disabled) {
+        transform: scale(0.95) translateY(1px);
+      }
+
+      .quiz-btn:disabled {
+        cursor: not-allowed;
+        opacity: 0.7;
+      }
+
+      .quiz-btn.correct-answer {
+        background: #10B981;
+        color: white;
+        border-color: #059669;
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+      }
+
+      .quiz-btn.incorrect-answer {
+        background: #EF4444;
+        color: white;
+        border-color: #DC2626;
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+      }
+
+      .quiz-locked {
+        pointer-events: none;
+      }
     </style>
   <script type="importmap">
 {
@@ -403,7 +958,40 @@
 </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
+    <div id="stage">
+      <div id="root"></div>
+    </div>
     <script type="module" src="/index.tsx"></script>
+    <script>
+      /* 스케일 조정을 위한 JavaScript 함수 */
+      function updateStageScale() {
+        const stage = document.getElementById('stage');
+        if (stage) {
+          // 스케일 계산: min(window.innerWidth/1280, window.innerHeight/800)
+          const scaleX = window.innerWidth / 1280;
+          const scaleY = window.innerHeight / 800;
+          const scale = Math.min(scaleX, scaleY);
+
+          // transform-origin: top center, 스케일 적용
+          stage.style.transformOrigin = 'top center';
+          stage.style.transform = `translateX(-50%) scale(${scale})`;
+
+          // body의 높이를 스케일된 stage 높이에 맞춤
+          const scaledHeight = 800 * scale;
+          document.body.style.minHeight = scaledHeight + 'px';
+
+          // 스크롤 처리: 필요시만 표시
+          if (scaledHeight > window.innerHeight) {
+            document.body.style.overflow = 'auto';
+          } else {
+            document.body.style.overflow = 'hidden';
+          }
+        }
+      }
+
+      /* 초기 로드 및 리사이즈 이벤트 */
+      document.addEventListener('DOMContentLoaded', updateStageScale);
+      window.addEventListener('resize', updateStageScale);
+    </script>
   </body>
 </html>

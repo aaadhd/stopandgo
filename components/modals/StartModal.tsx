@@ -12,7 +12,12 @@ const StartModal: React.FC<StartModalProps> = ({ onStart }) => {
                 <p className="text-3xl mb-10">Press the GO button on GREEN to win!</p>
                 <button
                     onClick={onStart}
-                    className="text-4xl font-bold py-5 px-12 rounded-2xl border-none cursor-pointer bg-green-500 text-white transition hover:bg-green-600 shadow-lg"
+                    className="text-4xl font-bold py-5 px-12 rounded-3xl text-white cursor-pointer transition-all active:scale-95 active:translate-y-1 hover:brightness-110"
+                    style={{
+                        background: '#49D86D',
+                        boxShadow: '0 6px 16px rgba(0,0,0,0.3)',
+                        border: '3px solid rgba(255,255,255,0.4)'
+                    }}
                 >
                     Start Game!
                 </button>
