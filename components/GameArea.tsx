@@ -165,9 +165,9 @@ const Player: React.FC<PlayerProps> = ({ team, position, status, currentRound, o
                 return {
                     path: `/sprite/${baseSprite}_win.png`,
                     // rabbit_win: 1014x2304 → 프레임당 169x384 (비율 0.440), height 115 기준 width ≈ 50.6
-                    // fox_win: 1452x1944 → 프레임당 242x324 (비율 0.747), height 98 기준 width ≈ 73.2
-                    width: team === 'red' ? 50 : 73,
-                    height: team === 'red' ? 115 : 98,
+                    // fox_win: 1452x1944 → 프레임당 242x324 (비율 0.747), height 98 기준 width ≈ 73.2 → 10% 축소: 66x88
+                    width: team === 'red' ? 50 : 66,
+                    height: team === 'red' ? 115 : 88,
                     fps: 24,
                     totalFrames: 36,
                     columns: 6,
@@ -178,9 +178,9 @@ const Player: React.FC<PlayerProps> = ({ team, position, status, currentRound, o
             return {
                 path: `/sprite/${baseSprite}_clap.png`,
                 // rabbit_clap: 984x1566 → 프레임당 164x261 (비율 0.628), height 100 기준 width ≈ 62.8
-                // fox_clap: 1368x1578 → 프레임당 228x263 (비율 0.867), height 82 기준 width ≈ 71.1
-                width: team === 'red' ? 63 : 71,
-                height: team === 'red' ? 100 : 82,
+                // fox_clap: 1368x1578 → 프레임당 228x263 (비율 0.867), height 82 기준 width ≈ 71.1 → 10% 축소: 64x74
+                width: team === 'red' ? 63 : 64,
+                height: team === 'red' ? 100 : 74,
                 fps: 24,
                 totalFrames: 36,
                 columns: 6,
