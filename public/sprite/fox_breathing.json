@@ -1,0 +1,20 @@
+{"frames": {
+
+"Position-the-low-poly-fox-subject-standing-straigh-256px-36 (1).png":
+{
+	"frame": {"x":0,"y":0,"w":1152,"h":1566},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":1152,"h":1566},
+	"sourceSize": {"w":1152,"h":1566}
+}},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "fox_breathing.png",
+	"format": "RGBA8888",
+	"size": {"w":1152,"h":1566},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:a94d7a9f452d1e8d86c6f68188574b5b:5f96fc869f03d0929988fa9b621e8455:5f24e1e223c3353f1051d833dd231a3b$"
+}
+}

@@ -2,8 +2,8 @@
 import { PlayerStatus, PlayerStatuses } from './types';
 
 export const MAX_ROUNDS = 5;
-export const ROUND_TIME_LIMIT = 5;
-export const FINISH_POSITION = 88;
+export const ROUND_TIME_LIMIT = 10;
+export const FINISH_POSITION = 80;
 export const MOVE_AMOUNT = 4;
 export const BOOST_MULTIPLIER = 2.5;
 export const SLOW_MULTIPLIER = 0.2;
@@ -47,9 +47,9 @@ export const INITIAL_PLAYER_STATUSES: PlayerStatuses = {
     blue: { ...INITIAL_PLAYER_STATUS },
 };
 
-export const ITEM_EMOJIS: { [key: string]: string } = {
-    shield: '🛡️',
-    booster: '🚀',
-    slow: '🐌',
-    ice: '🧊',
+export const ITEM_IMAGES: { [key: string]: string } = {
+    shield: '/items/shield.png',
+    booster: '/items/rocket.png',
+    slow: '/items/snail.png',
+    ice: '/items/ice.png',
 };

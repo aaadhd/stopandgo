@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="data:," />
     <title>Stop & Go Race</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -51,47 +52,10 @@
         border-radius: 0;
         z-index: 20; /* Round 1 텍스트 위로 표시 */
 
-        /* 기본 숲 테마만 적용 (바다/우주 테마는 각각의 클래스에서 덮어씀) */
-        background:
-          /* 7. 못 (밝고 선명한 톤) */
-          radial-gradient(circle 3.5px at 3% 8%, rgba(80,60,50,.45) 0%, rgba(100,75,60,.5) 30%, rgba(120,90,70,.35) 60%, transparent 100%) 0 26px/800px 52px,
-          radial-gradient(circle 3px at 4% 60%, rgba(85,65,55,.5) 0%, rgba(105,80,65,.55) 35%, rgba(115,85,70,.4) 65%, transparent 100%) 0 32px/800px 52px,
-          radial-gradient(circle 3.8px at 2.5% 112%, rgba(80,60,50,.45) 0%, rgba(100,75,60,.5) 30%, rgba(120,90,70,.35) 60%, transparent 100%) 0 18px/800px 52px,
-          radial-gradient(circle 3.2px at 97% 15%, rgba(85,65,55,.5) 0%, rgba(105,80,65,.55) 35%, rgba(115,85,70,.4) 65%, transparent 100%) 0 28px/800px 52px,
-          radial-gradient(circle 3.6px at 96.5% 68%, rgba(80,60,50,.45) 0%, rgba(100,75,60,.5) 30%, rgba(120,90,70,.35) 60%, transparent 100%) 0 35px/800px 52px,
-          radial-gradient(circle 3.3px at 98% 120%, rgba(85,65,55,.5) 0%, rgba(105,80,65,.55) 35%, rgba(115,85,70,.4) 65%, transparent 100%) 0 22px/800px 52px,
-          /* 6. 이끼 패치 (생생한 녹색) */
-          radial-gradient(ellipse 24px 20px at 18% 28%, var(--moss) 0%, transparent 65%) 0 0/350px 320px,
-          radial-gradient(ellipse 28px 22px at 82% 62%, var(--leaf) 0%, transparent 65%) 0 0/380px 340px,
-          radial-gradient(ellipse 20px 16px at 52% 15%, rgba(242,179,108,.3) 0%, transparent 65%) 0 0/290px 260px,
-          radial-gradient(ellipse 22px 18px at 35% 85%, rgba(232,168,88,.25) 0%, transparent 65%) 0 0/310px 280px,
-          /* 5. 부드러운 입체감 (flat 2.5D) */
-          radial-gradient(ellipse 75% 100% at 50% 50%, rgba(255,255,255,.15) 0%, transparent 60%, rgba(0,0,0,.12) 100%),
-          /* 4. 나무결 (미묘한 가로 결) */
-          repeating-linear-gradient(0deg,
-            transparent 0 8px,
-            rgba(200,130,80,.05) 8px 9px,
-            transparent 9px 18px,
-            rgba(220,150,90,.04) 18px 19px,
-            transparent 19px 32px
-          ),
-          /* 3. 나무 판재 경계 (깔끔하고 선명) */
-          repeating-linear-gradient(0deg,
-            transparent 0 24px,
-            rgba(200,130,80,.15) 24px 25.5px,
-            rgba(220,150,100,.12) 25.5px 27px,
-            rgba(200,130,80,.13) 27px 28px,
-            transparent 28px 52px
-          ),
-          /* 2. 하이라이트 (상단만 밝게) */
-          linear-gradient(180deg, rgba(255,255,255,.2) 0%, transparent 30%),
-          /* 1. 더 어둡고 깊이감 있는 베이스 */
-          linear-gradient(180deg, #E2A65F 0%, #D4964A 50%, #C0853A 100%);
+        /* 배경 이미지에 길이 포함되어 있으므로 CSS 배경 숨김 */
+        background: transparent !important;
 
-        /* 좌우측 입체감 복원 */
-        box-shadow:
-          inset 12px 0 20px -8px rgba(0,0,0,.18),
-          inset -12px 0 20px -8px rgba(0,0,0,.18);
+        box-shadow: none;
 
         /* 깊이감 제거 */
         filter: none;
@@ -106,64 +70,18 @@
         width: 800px;  /* 고정 너비 800px */
         border-radius: 0;
 
-        /* 바다 터널 - 올바른 레이어 순서 */
-        background:
-          /* 1) 베이스 - 깊은 해저 베이스 (가장 아래) */
-          linear-gradient(180deg, #1a5f7a, #0f4a63 70%, #0a3d52),
-          /* 2) 모래색 베이스 */
-          radial-gradient(140% 100% at 50% 0%, #E2A65F 0, #D4964A 60%, #C0853A 100%),
-          /* 3) 유리벽 반사 */
-          linear-gradient(to right, 
-            rgba(255,255,255,.4) 0%, 
-            rgba(255,255,255,.1) 8%, 
-            transparent 15% 85%, 
-            rgba(255,255,255,.1) 92%, 
-            rgba(255,255,255,.4) 100%),
-          /* 4) 깊은 해저 물색 그라데이션 */
-          linear-gradient(180deg, 
-            rgba(26,95,122,.4) 0%, 
-            rgba(15,74,99,.5) 30%, 
-            rgba(10,61,82,.6) 70%, 
-            transparent 100%),
-          /* 5) 수면 반사 */
-          radial-gradient(ellipse 200px 50px at 30% 20%, rgba(255,255,255,.2) 0%, transparent 60%),
-          radial-gradient(ellipse 150px 40px at 70% 60%, rgba(255,255,255,.15) 0%, transparent 60%),
-          /* 6) 물결 패턴 */
-          repeating-linear-gradient(45deg,
-            transparent 0 15px,
-            rgba(255,255,255,.15) 15px 16px,
-            transparent 16px 30px
-          ),
-          /* 7) 모래/산호 파편 */
-          radial-gradient(3px 2px at 24% 12%, rgba(214,134,120,.55) 45%, transparent 46%) 0 0/34px 28px,
-          radial-gradient(2px 2px at 70% 40%, rgba(255,246,189,.55) 45%, transparent 46%) 0 0/28px 26px,
-          radial-gradient(2px 2px at 38% 72%, rgba(128,206,212,.45) 45%, transparent 46%) 0 0/40px 34px,
-          linear-gradient(0deg, rgba(255,255,255,.18) 0 8%, transparent 8% 22%) center/100% 36px repeat-y,
-          /* 8) 물속 미세 입자 (가장 위) */
-          radial-gradient(circle 1.5px at 15% 20%, rgba(255,255,255,.5) 0%, transparent 100%) 0 0/40px 60px,
-          radial-gradient(circle 1.5px at 85% 30%, rgba(200,255,255,.6) 0%, transparent 100%) 0 0/50px 70px,
-          radial-gradient(circle 1.5px at 45% 80%, rgba(255,255,255,.4) 0%, transparent 100%) 0 0/35px 45px;
-        box-shadow: 
-          /* 좌우측 유리 터널 입체감 복원 */
-          inset 8px 0 20px -5px rgba(0,0,0,.2),
-          inset -8px 0 20px -5px rgba(0,0,0,.2),
-          /* 깊은 해저 글로우 */
-          0 0 40px rgba(26,95,122,.6);
+        /* 배경 이미지에 길이 포함되어 있으므로 CSS 배경 숨김 */
+        background: transparent !important;
+        box-shadow: none;
         filter: none;
         
         /* 트랙 가장자리 그라데이션 제거 */
         position: relative;
       }
 
-      /* 산호/해초 가장자리 */
+      /* 산호/해초 가장자리 - 숨김처리 */
       .sea .trail::after{
-        width: 40px;
-        background:
-          radial-gradient(14px 10px at 20% 12%, #ffb4a2 42%, transparent 46%) 0 0/48px 44px,
-          radial-gradient(10px 8px  at 70% 30%, #77d3cf 42%, transparent 46%) 0 0/40px 36px,
-          radial-gradient(8px 6px   at 40% 70%, #cbe8a0 42%, transparent 46%) 0 0/46px 42px;
-        filter: blur(1px) saturate(1.05);
-        mix-blend-mode:multiply;
+        display: none;
       }
       .sea .trail::before{ left: 0; }
       .sea .trail::after { right: 0; }
@@ -172,81 +90,16 @@
       .fishway.glass .trail, .fishway .glass .trail, .fishway .trail, div.fishway.glass .trail, div.fishway .glass .trail, div.fishway .trail{
         width: 800px;
         border-radius: 0;
-        /* 바다 터널 - 최고 우선순위로 완전 덮어쓰기 */
-        background: 
-          /* 1) 베이스 - 깊은 해저 베이스 (가장 아래) */
-          linear-gradient(180deg, #1a5f7a, #0f4a63 70%, #0a3d52),
-          /* 2) 모래색 베이스 */
-          radial-gradient(140% 100% at 50% 0%, #E2A65F 0, #D4964A 60%, #C0853A 100%),
-          /* 3) 깊은 해저 물색 그라데이션 */
-          linear-gradient(180deg, 
-            rgba(26,95,122,.4) 0%, 
-            rgba(15,74,99,.5) 30%, 
-            rgba(10,61,82,.6) 70%, 
-            transparent 100%),
-          /* 4) 모래/산호 파편 */
-          radial-gradient(3px 2px at 24% 12%, rgba(214,134,120,.55) 45%, transparent 46%) 0 0/34px 28px,
-          radial-gradient(2px 2px at 70% 40%, rgba(255,246,189,.55) 45%, transparent 46%) 0 0/28px 26px,
-          radial-gradient(2px 2px at 38% 72%, rgba(128,206,212,.45) 45%, transparent 46%) 0 0/40px 34px,
-          linear-gradient(0deg, rgba(255,255,255,.18) 0 8%, transparent 8% 22%) center/100% 36px repeat-y,
-          /* 5) 물결 패턴 */
-          repeating-linear-gradient(45deg,
-            transparent 0 15px,
-            rgba(255,255,255,.15) 15px 16px,
-            transparent 16px 30px
-          ),
-          /* 6) 수면 반사 */
-          radial-gradient(ellipse 200px 50px at 30% 20%, rgba(255,255,255,.2) 0%, transparent 60%),
-          radial-gradient(ellipse 150px 40px at 70% 60%, rgba(255,255,255,.15) 0%, transparent 60%),
-          /* 7) 유리벽 반사 */
-          linear-gradient(to right, 
-            rgba(255,255,255,.4) 0%, 
-            rgba(255,255,255,.1) 8%, 
-            transparent 15% 85%, 
-            rgba(255,255,255,.1) 92%, 
-            rgba(255,255,255,.4) 100%),
-          /* 8) 물속 미세 입자 (가장 위) */
-          radial-gradient(circle 1.5px at 15% 20%, rgba(255,255,255,.5) 0%, transparent 100%) 0 0/40px 60px,
-          radial-gradient(circle 1.5px at 85% 30%, rgba(200,255,255,.6) 0%, transparent 100%) 0 0/50px 70px,
-          radial-gradient(circle 1.5px at 45% 80%, rgba(255,255,255,.4) 0%, transparent 100%) 0 0/35px 45px !important;
+        /* 배경 이미지에 길이 포함되어 있으므로 CSS 배경 숨김 */
+        background: transparent !important;
         overflow:hidden;
-        /* 좌우측 입체감 복원 */
-        box-shadow:
-          inset 12px 0 20px -10px rgba(0,0,0,.22),
-          inset -12px 0 20px -10px rgba(0,0,0,.22),
-          0 0 18px rgba(26,95,122,.4);
+        box-shadow: none;
         filter: none;
       }
 
-      /* 물 흐름 효과 */
+      /* 물 흐름 효과 - 숨김처리 */
       .fishway.glass .trail::after, .fishway .glass .trail::after, .fishway .trail::after{
-        content:"";
-        position:absolute;
-        inset:0;
-        pointer-events:none;
-        /* 흐르는 물결 */
-        background:
-          repeating-linear-gradient(3deg,
-            transparent 0px,
-            rgba(255,255,255,.06) 15px,
-            rgba(255,255,255,.08) 30px,
-            rgba(255,255,255,.05) 45px,
-            transparent 55px,
-            transparent 120px
-          ),
-          repeating-linear-gradient(-5deg,
-            transparent 0px,
-            rgba(200,230,255,.05) 12px,
-            rgba(200,230,255,.07) 25px,
-            rgba(200,230,255,.04) 38px,
-            transparent 48px,
-            transparent 110px
-          );
-        opacity:.4; 
-        filter: blur(12px);
-        animation: waterFlow 18s linear infinite;
-        background-size: 100% 250%;
-        background-position: 0 0;
+        display: none;
       }
 
       /* 애니메이션 */
@@ -259,66 +112,9 @@
       .space .trail{
         width: 800px;
         border-radius: 0;
-        /* 우주정거장 메탈릭 트랙 - 고완성도 */
-        background:
-          /* 8) 미세한 메탈릭 스크래치 */
-          repeating-linear-gradient(45deg,
-            transparent 0 2px,
-            rgba(255,255,255,.02) 2px 3px,
-            transparent 3px 8px
-          ),
-          /* 7) 메탈릭 브러시 마크 */
-          repeating-linear-gradient(135deg,
-            transparent 0 12px,
-            rgba(200,200,200,.03) 12px 13px,
-            transparent 13px 24px
-          ),
-          /* 6) 네온 라인 (사이드) */
-          linear-gradient(90deg, 
-            transparent 0%, 
-            rgba(0,255,255,.3) 2%, 
-            rgba(0,255,255,.6) 3%, 
-            transparent 4% 96%, 
-            rgba(0,255,255,.6) 97%, 
-            rgba(0,255,255,.3) 98%, 
-            transparent 100%),
-          /* 5) 에너지 필드 (더 강화) */
-          radial-gradient(ellipse 120% 60% at 50% 50%, rgba(0,255,255,.08) 0%, rgba(0,255,255,.03) 50%, transparent 80%),
-          /* 4) 메탈릭 패널 하이라이트 */
-          linear-gradient(90deg,
-            transparent 0%,
-            rgba(255,255,255,.1) 5%,
-            rgba(255,255,255,.05) 10%,
-            transparent 15% 85%,
-            rgba(255,255,255,.05) 90%,
-            rgba(255,255,255,.1) 95%,
-            transparent 100%
-          ),
-          /* 3) 메탈릭 하이라이트 (상단만 밝게) */
-          linear-gradient(180deg, 
-            rgba(240,240,240,.25) 0%, 
-            rgba(220,220,220,.15) 20%, 
-            rgba(200,200,200,.08) 40%, 
-            transparent 60%),
-          /* 2) 메탈릭 베이스 그라데이션 (더 풍부) */
-          linear-gradient(180deg, 
-            #7a7a7a 0%, 
-            #6a6a6a 20%, 
-            #5a5a5a 40%, 
-            #4a4a4a 60%, 
-            #3a3a3a 80%, 
-            #2a2a2a 100%),
-          /* 1) 메탈릭 메인 베이스 */
-          linear-gradient(180deg, #8a8a8a 0%, #7a7a7a 50%, #6a6a6a 100%);
-        /* 좌우측 메탈릭 입체감 + 에너지 글로우 복원 */
-        box-shadow: 
-          /* 좌측 메탈릭 입체감 */
-          inset 12px 0 20px -8px rgba(0,0,0,.4),
-          /* 우측 메탈릭 입체감 */
-          inset -12px 0 20px -8px rgba(0,0,0,.4),
-          /* 에너지 글로우 (더 강화) */
-          0 0 30px rgba(0,255,255,.4),
-          0 0 60px rgba(0,255,255,.2);
+        /* 배경 이미지에 길이 포함되어 있으므로 CSS 배경 숨김 */
+        background: transparent !important;
+        box-shadow: none;
         filter: none;
         
         /* 트랙 가장자리 그라데이션 제거 */
@@ -368,9 +164,10 @@
           100% { filter: drop-shadow(0 0 0 rgba(255, 255, 255, 0.7)); }
       }
       @keyframes shake {
-          0%, 100% { transform: translateX(0); }
-          25% { transform: translateX(-10px) rotate(-5deg); }
-          75% { transform: translateX(10px) rotate(5deg); }
+          0%, 100% { margin-left: 0; filter: none; }
+          25% { margin-left: -10px; filter: brightness(1.1); }
+          50% { margin-left: 10px; filter: brightness(0.9); }
+          75% { margin-left: -10px; filter: brightness(1.1); }
       }
       @keyframes item-appear {
           from { transform: scale(0.5) translateX(-50%); opacity: 0; }
@@ -660,7 +457,140 @@
         }
       }
 
-      /* Rabbit Atlas Animation */
+      /* Rabbit Sprite Animation - 6x6 grid, 36 frames (Team A - Red) */
+      /* 전체 이미지: 780x1662px, 각 프레임: 130x277px */
+      /* 각 프레임의 정확한 위치를 계산하여 순차적으로 표시 */
+      @keyframes rabbit-sprite-run {
+        /* 프레임 0-5 (1행) */
+        0% { background-position: 0px 0px; }
+        2.777% { background-position: -130px 0px; }
+        5.555% { background-position: -260px 0px; }
+        8.333% { background-position: -390px 0px; }
+        11.111% { background-position: -520px 0px; }
+        13.888% { background-position: -650px 0px; }
+        /* 프레임 6-11 (2행) */
+        16.666% { background-position: 0px -277px; }
+        19.444% { background-position: -130px -277px; }
+        22.222% { background-position: -260px -277px; }
+        25% { background-position: -390px -277px; }
+        27.777% { background-position: -520px -277px; }
+        30.555% { background-position: -650px -277px; }
+        /* 프레임 12-17 (3행) */
+        33.333% { background-position: 0px -554px; }
+        36.111% { background-position: -130px -554px; }
+        38.888% { background-position: -260px -554px; }
+        41.666% { background-position: -390px -554px; }
+        44.444% { background-position: -520px -554px; }
+        47.222% { background-position: -650px -554px; }
+        /* 프레임 18-23 (4행) */
+        50% { background-position: 0px -831px; }
+        52.777% { background-position: -130px -831px; }
+        55.555% { background-position: -260px -831px; }
+        58.333% { background-position: -390px -831px; }
+        61.111% { background-position: -520px -831px; }
+        63.888% { background-position: -650px -831px; }
+        /* 프레임 24-29 (5행) */
+        66.666% { background-position: 0px -1108px; }
+        69.444% { background-position: -130px -1108px; }
+        72.222% { background-position: -260px -1108px; }
+        75% { background-position: -390px -1108px; }
+        77.777% { background-position: -520px -1108px; }
+        80.555% { background-position: -650px -1108px; }
+        /* 프레임 30-35 (6행) */
+        83.333% { background-position: 0px -1385px; }
+        86.111% { background-position: -130px -1385px; }
+        88.888% { background-position: -260px -1385px; }
+        91.666% { background-position: -390px -1385px; }
+        94.444% { background-position: -520px -1385px; }
+        97.222% { background-position: -650px -1385px; }
+        100% { background-position: 0px 0px; }
+      }
+      
+      /* Fox Sprite Animation - 6x6 grid, 36 frames (Team B - Blue) */
+      /* 전체 이미지: 1224x1650px, 각 프레임: 204x275px */
+      /* 각 프레임의 정확한 위치를 계산하여 순차적으로 표시 */
+      @keyframes fox-sprite-run {
+        /* 프레임 0-5 (1행) */
+        0% { background-position: 0px 0px; }
+        2.777% { background-position: -204px 0px; }
+        5.555% { background-position: -408px 0px; }
+        8.333% { background-position: -612px 0px; }
+        11.111% { background-position: -816px 0px; }
+        13.888% { background-position: -1020px 0px; }
+        /* 프레임 6-11 (2행) */
+        16.666% { background-position: 0px -275px; }
+        19.444% { background-position: -204px -275px; }
+        22.222% { background-position: -408px -275px; }
+        25% { background-position: -612px -275px; }
+        27.777% { background-position: -816px -275px; }
+        30.555% { background-position: -1020px -275px; }
+        /* 프레임 12-17 (3행) */
+        33.333% { background-position: 0px -550px; }
+        36.111% { background-position: -204px -550px; }
+        38.888% { background-position: -408px -550px; }
+        41.666% { background-position: -612px -550px; }
+        44.444% { background-position: -816px -550px; }
+        47.222% { background-position: -1020px -550px; }
+        /* 프레임 18-23 (4행) */
+        50% { background-position: 0px -825px; }
+        52.777% { background-position: -204px -825px; }
+        55.555% { background-position: -408px -825px; }
+        58.333% { background-position: -612px -825px; }
+        61.111% { background-position: -816px -825px; }
+        63.888% { background-position: -1020px -825px; }
+        /* 프레임 24-29 (5행) */
+        66.666% { background-position: 0px -1100px; }
+        69.444% { background-position: -204px -1100px; }
+        72.222% { background-position: -408px -1100px; }
+        75% { background-position: -612px -1100px; }
+        77.777% { background-position: -816px -1100px; }
+        80.555% { background-position: -1020px -1100px; }
+        /* 프레임 30-35 (6행) */
+        83.333% { background-position: 0px -1375px; }
+        86.111% { background-position: -204px -1375px; }
+        88.888% { background-position: -408px -1375px; }
+        91.666% { background-position: -612px -1375px; }
+        94.444% { background-position: -816px -1375px; }
+        97.222% { background-position: -1020px -1375px; }
+        100% { background-position: 0px 0px; }
+      }
+      
+      .rabbit-sprite {
+        background-image: url('/sprite/rabbit_running.png');
+        /* 전체 이미지 크기: 780x1662px */
+        /* 각 프레임 크기: 130x277px */
+        /* 컨테이너 크기: 40px × 85px */
+        /* background-size를 전체 이미지 크기로 설정하고, 컨테이너가 각 프레임만 보이도록 함 */
+        background-size: 780px 1662px; /* 전체 스프라이트 시트 크기 */
+        background-repeat: no-repeat;
+        background-position: 0 0;
+        animation: rabbit-sprite-run 4.5s steps(36, end) infinite; /* 36단계로 나누어 각 프레임 표시 */
+        width: 40px;
+        height: 85px;
+        display: block;
+        image-rendering: pixelated;
+        image-rendering: -moz-crisp-edges;
+        image-rendering: crisp-edges;
+      }
+      
+      .fox-sprite {
+        background-image: url('/sprite/fox_running.png');
+        /* 전체 이미지 크기: 1224x1650px */
+        /* 각 프레임 크기: 204x275px */
+        /* 컨테이너 크기: 40px × 54px */
+        /* background-size를 전체 이미지 크기로 설정하고, 컨테이너가 각 프레임만 보이도록 함 */
+        background-size: 1224px 1650px; /* 전체 스프라이트 시트 크기 */
+        background-repeat: no-repeat;
+        background-position: 0 0;
+        animation: fox-sprite-run 4.5s steps(36, end) infinite; /* 36단계로 나누어 각 프레임 표시 */
+        width: 40px;
+        height: 54px;
+        display: block;
+        image-rendering: pixelated;
+        image-rendering: -moz-crisp-edges;
+        image-rendering: crisp-edges;
+      }
+      
       @keyframes rabbit-run {
         0% { background-position: 0px 0px; }
         6.25% { background-position: -65px 0px; }
@@ -712,12 +642,12 @@
       /* Emoji Runner Animations (fallback) */
       @keyframes runner-bob {
         0%, 100% { transform: translateY(0) scaleX(1); }
-        25% { transform: translateY(-8px) scaleX(1.05) rotate(-2deg); }
-        75% { transform: translateY(-4px) scaleX(0.95) rotate(2deg); }
+        25% { transform: translateY(-8px) scaleX(1.05); }
+        75% { transform: translateY(-4px) scaleX(0.95); }
       }
       @keyframes cheer-jump {
-        0%, 100% { transform: translateY(0) scale(1) rotate(0deg); }
-        50% { transform: translateY(-25px) scale(1.2) rotate(10deg); }
+        0%, 100% { transform: translateY(0) scale(1); }
+        50% { transform: translateY(-25px) scale(1.2); }
       }
       
       /* 자연스러운 콘페티 폭발 효과 */

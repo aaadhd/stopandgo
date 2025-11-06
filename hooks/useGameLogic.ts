@@ -227,7 +227,9 @@ export const useGameLogic = () => {
 
     const showQuiz = useCallback(async (winnerTeam: Team) => {
         // 이미 퀴즈를 보여주고 있으면 무시
+        console.log('[showQuiz] Called, isShowingQuizRef:', isShowingQuizRef.current);
         if (isShowingQuizRef.current) {
+            console.log('[showQuiz] Already showing quiz, returning');
             return;
         }
 
@@ -236,9 +238,12 @@ export const useGameLogic = () => {
 
         // 중복 호출 방지
         setGameState(prev => {
+            console.log('[showQuiz] Current phase:', prev.gamePhase);
             if (prev.gamePhase === GamePhase.QUIZ) {
+                console.log('[showQuiz] Already in QUIZ phase, returning');
                 return prev; // 이미 퀴즈 모드면 무시
             }
+            console.log('[showQuiz] Transitioning to QUIZ phase');
             return { ...prev, gamePhase: GamePhase.QUIZ, isQuizLoading: true, quiz: null, currentWinner: winnerTeam };
         });
 
@@ -281,6 +286,7 @@ export const useGameLogic = () => {
     }, [handleQuizTimeout]);
 
     const handleRoundWin = useCallback((winnerTeam: Team) => {
+        console.log('[handleRoundWin] Called with winner:', winnerTeam);
         clearAllTimers();
         playSound('round-win');
 
@@ -293,6 +299,7 @@ export const useGameLogic = () => {
         setGameState(prev => {
             const newPlayerStatuses = JSON.parse(JSON.stringify(INITIAL_PLAYER_STATUSES));
             newPlayerStatuses[winnerTeam].isWinner = true;
+            console.log('[handleRoundWin] Setting winner status, prev phase:', prev.gamePhase);
             return {
                 ...prev,
                 playerStatus: newPlayerStatuses,
@@ -301,6 +308,7 @@ export const useGameLogic = () => {
         });
 
         setTimeout(() => {
+            console.log('[handleRoundWin] About to call showQuiz');
             showQuiz(winnerTeam);
         }, 1000);
 
@@ -364,10 +372,15 @@ export const useGameLogic = () => {
     }, [clearAllTimers, endGame, showQuiz]);
 
     const handleGo = useCallback((team: Team) => {
+        console.log('[handleGo] Called for team:', team, 'phase:', gameState.gamePhase, 'isFrozen:', gameState.playerStatus[team].isFrozen);
+
         if (gameState.gamePhase !== GamePhase.PLAYING || gameState.playerStatus[team].isFrozen) return;
 
         if (gameState.currentLight === 'green' || gameState.currentLight === 'yellow') {
             playSound('move');
+
+            let shouldTriggerWin = false;
+            let winnerTeam: Team | null = null;
 
             setGameState(prev => {
                 const status = prev.playerStatus[team];
@@ -376,32 +389,38 @@ export const useGameLogic = () => {
                 const move = MOVE_AMOUNT * boostMultiplier * speedMultiplier;
                 let newPosition = prev.positions[team] + move;
 
+                console.log('[handleGo] Current position:', prev.positions[team], 'New position:', newPosition, 'Finish:', FINISH_POSITION);
+
                 // 결승선 도달
+                let isFinishLineReached = false;
                 if (newPosition >= FINISH_POSITION) {
+                    console.log('[handleGo] Reached finish line!');
                     newPosition = FINISH_POSITION;
-                    // 아직 승자가 없을 때만 승리 처리
+                    isFinishLineReached = true;
+                    // 아직 승자가 없을 때만 승리 처리 플래그 설정
                     if (!prev.playerStatus.red.isWinner && !prev.playerStatus.blue.isWinner) {
+                        console.log('[handleGo] No winner yet, setting flag');
+                        shouldTriggerWin = true;
+                        winnerTeam = team;
                         // 결승선 도달 시 모든 아이템 효과 해제
                         Object.values(playerTimeoutRef.current[team]).forEach(clearTimeout);
                         playerTimeoutRef.current[team] = {};
-
-                        handleRoundWin(team);
+                    } else {
+                        console.log('[handleGo] Winner already exists:', prev.playerStatus.red.isWinner, prev.playerStatus.blue.isWinner);
                     }
                 }
 
-                // 출발선 도달 (뒤로 이동해서 0 이하가 된 경우)
+                // 출발선 도달 (뒤로 이동해서 5 이하가 된 경우)
                 let shouldClearEffects = false;
-                if (newPosition <= 0) {
-                    newPosition = 0;
+                if (newPosition <= 5) {
+                    newPosition = 5;
                     shouldClearEffects = true;
-                    // 출발선 도달 시 모든 아이템 효과 해제
-                    Object.values(playerTimeoutRef.current[team]).forEach(clearTimeout);
-                    playerTimeoutRef.current[team] = {};
                 }
-                
+
+                // 결승선 또는 출발선 도달 시에는 아이템 수집하지 않음
                 const newItems = [...prev.items];
                 const collectedItems: Item[] = [];
-                const remainingItems = newItems.filter(item => {
+                const remainingItems = (isFinishLineReached || shouldClearEffects) ? newItems : newItems.filter(item => {
                     if (item.team === team && Math.abs(newPosition - item.position) < 5) {
                         collectedItems.push(item);
                         return false;
@@ -410,7 +429,9 @@ export const useGameLogic = () => {
                 });
 
                 let newPlayerStatus = { ...prev.playerStatus };
-                collectedItems.forEach(item => {
+                // 결승선 또는 출발선 도달 시에는 아이템 수집하지 않음
+                if (!shouldClearEffects && !isFinishLineReached) {
+                    collectedItems.forEach(item => {
                     const opponent = team === 'red' ? 'blue' : 'red';
                     
                     if (item.type === 'shield' || item.type === 'booster') {
@@ -459,12 +480,35 @@ export const useGameLogic = () => {
                             }
                             break;
                     }
-                });
+                    });
+                }
 
                 // 출발선 도달 시 플레이어 상태 초기화
                 if (shouldClearEffects) {
+                    // 모든 아이템 효과 타이머 제거
+                    Object.values(playerTimeoutRef.current[team]).forEach(timeout => {
+                        if (timeout) clearTimeout(timeout);
+                    });
+                    playerTimeoutRef.current[team] = {};
+
+                    // 상태 완전 초기화 (깊은 복사)
+                    newPlayerStatus[team] = JSON.parse(JSON.stringify(INITIAL_PLAYER_STATUS));
+                }
+
+                // 결승선 도달 시 플레이어 상태 초기화 (아이템 효과 제거)
+                if (isFinishLineReached) {
+                    // 모든 아이템 효과 타이머 제거
+                    Object.values(playerTimeoutRef.current[team]).forEach(timeout => {
+                        if (timeout) clearTimeout(timeout);
+                    });
+                    playerTimeoutRef.current[team] = {};
+
                     newPlayerStatus[team] = {
-                        ...INITIAL_PLAYER_STATUS
+                        ...newPlayerStatus[team],
+                        hasShield: false,
+                        isBoosted: false,
+                        isSlowed: false,
+                        isFrozen: false
                     };
                 }
 
@@ -475,6 +519,15 @@ export const useGameLogic = () => {
                     playerStatus: newPlayerStatus
                 };
             });
+
+            // setGameState 완료 후 승리 처리
+            if (shouldTriggerWin && winnerTeam) {
+                console.log('[handleGo] Triggering win for', winnerTeam);
+                // 즉시 호출하지 않고 약간의 지연을 줌 (상태 업데이트 완료 보장)
+                setTimeout(() => {
+                    handleRoundWin(winnerTeam);
+                }, 0);
+            }
 
         } else { // Red light
             playSound('penalty');
@@ -517,37 +570,45 @@ export const useGameLogic = () => {
     
     const spawnItem = useCallback(() => {
         setGameState(prev => {
-            if (prev.items.length >= 6) return prev; // Limit items on screen
-            
+            // 화면에 아이템이 너무 많으면 스킵
+            if (prev.items.length >= 4) return prev;
+
             const itemTypes: ItemType[] = ['shield', 'booster', 'slow', 'ice'];
             const type = itemTypes[Math.floor(Math.random() * itemTypes.length)];
             const team: Team = Math.random() > 0.5 ? 'red' : 'blue';
 
-            // If the player for whom the item would spawn already has an active effect, skip.
+            // 해당 팀에 이미 아이템이 있으면 스킵 (팀당 최대 1개)
+            const teamHasItem = prev.items.some(item => item.team === team);
+            if (teamHasItem) {
+                return prev;
+            }
+
+            // 플레이어가 이미 효과를 받고 있으면 스킵
             const teamStatus = prev.playerStatus[team];
             if (teamStatus.hasShield || teamStatus.isBoosted || teamStatus.isSlowed || teamStatus.isFrozen) {
                 return prev;
             }
-            
+
             const playerPos = prev.positions[team];
-            const minSpawnY = Math.max(playerPos + 20, 15); // 출발선(0%) 근처 15% 제외
-            const maxSpawnY = Math.min(playerPos + 40, FINISH_POSITION - 15); // 결승선(88%) 근처 15% 제외
-            
+            const minSpawnY = Math.max(playerPos + 15, 15);
+            const maxSpawnY = Math.min(playerPos + 35, FINISH_POSITION - 10);
+
             if (maxSpawnY <= minSpawnY) return prev;
-            
+
             const position = Math.random() * (maxSpawnY - minSpawnY) + minSpawnY;
 
-            // Check for overlapping items
+            // 다른 아이템과 너무 가까우면 스킵
             const isOverlapping = prev.items.some(
                 item => Math.abs(item.position - position) < MIN_ITEM_DISTANCE
             );
 
             if (isOverlapping) {
-                return prev; // Skip spawning this time to avoid overlap
+                return prev;
             }
-            
+
             const newItem: Item = { id: Date.now(), team, type, position, disappearing: false };
 
+            // 3초 후 아이템 사라짐
             setTimeout(() => {
                 setGameState(p => ({ ...p, items: p.items.map(i => i.id === newItem.id ? { ...i, disappearing: true } : i)}));
                 setTimeout(() => {
@@ -684,6 +745,7 @@ export const useGameLogic = () => {
 
     }, [gameState.gamePhase, gameState.isPaused]); // gamePhase와 isPaused를 dependency로 사용
 
+
     // 컴포넌트 언마운트 시 정리
     useEffect(() => {
         return () => {
@@ -699,15 +761,23 @@ export const useGameLogic = () => {
     const startGame = useCallback(() => {
         playSound('start');
 
-        // 모든 타이머 정리
+        // 모든 타이머 정리 (플레이어 효과 타이머 포함)
         clearAllTimers();
+
+        // 플레이어 효과 타이머 명시적으로 재정리
+        ['red', 'blue'].forEach(team => {
+            Object.values(playerTimeoutRef.current[team as Team]).forEach(timeout => {
+                if (timeout) clearTimeout(timeout);
+            });
+            playerTimeoutRef.current[team as Team] = {};
+        });
 
         setGameState(prev => ({
             ...prev,
             gamePhase: GamePhase.ROUND_START,
             positions: { red: 5, blue: 5 },
             items: [],
-            playerStatus: INITIAL_PLAYER_STATUSES,
+            playerStatus: JSON.parse(JSON.stringify(INITIAL_PLAYER_STATUSES)),
             currentLight: 'red',
             currentWinner: null,
         }));
@@ -716,22 +786,27 @@ export const useGameLogic = () => {
     const playRound = useCallback(() => {
         playSound('click');
 
-        // 이전 라운드의 모든 플레이어 효과 타이머 정리
+        // 모든 타이머 정리
+        clearAllTimers();
+
+        // 플레이어 효과 타이머 명시적으로 재정리
         ['red', 'blue'].forEach(team => {
-            Object.values(playerTimeoutRef.current[team as Team]).forEach(clearTimeout);
+            Object.values(playerTimeoutRef.current[team as Team]).forEach(timeout => {
+                if (timeout) clearTimeout(timeout);
+            });
+            playerTimeoutRef.current[team as Team] = {};
         });
-        playerTimeoutRef.current = { red: {}, blue: {} };
 
         setGameState(prev => ({
             ...prev,
             gamePhase: GamePhase.PLAYING,
             positions: { red: 5, blue: 5 },
-            playerStatus: INITIAL_PLAYER_STATUSES,
+            playerStatus: JSON.parse(JSON.stringify(INITIAL_PLAYER_STATUSES)),
             timeLeft: ROUND_TIME_LIMIT,
             items: [],
             currentLight: 'red',
         }));
-    }, []);
+    }, [clearAllTimers]);
 
     const resetGame = useCallback(() => {
         playSound('click');

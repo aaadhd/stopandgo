@@ -1,0 +1,20 @@
+{"frames": {
+
+"A-low-poly-stylized-3D-sprite-of-a-cute-fox-charac-256px-36 (1).png":
+{
+	"frame": {"x":0,"y":0,"w":1452,"h":1944},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":1452,"h":1944},
+	"sourceSize": {"w":1452,"h":1944}
+}},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "fox_win.png",
+	"format": "RGBA8888",
+	"size": {"w":1452,"h":1944},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:ea078ab973624708989f5f73086ed6cb:360a2006d32c35166a4b8a65e0726be2:f61e998d203da5fa5fbda62a6e4f454b$"
+}
+}

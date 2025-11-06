@@ -1,0 +1,20 @@
+{"frames": {
+
+"Low-poly-3D-character-asset-of-a-cute-rabbit-viewe-256px-36.png":
+{
+	"frame": {"x":0,"y":0,"w":1014,"h":2304},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":1014,"h":2304},
+	"sourceSize": {"w":1014,"h":2304}
+}},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "rabbit_win.png",
+	"format": "RGBA8888",
+	"size": {"w":1014,"h":2304},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:ced051575345adbc7dcce0ad3b5afdb3:46ddc34d902c49add04183be16d3cb14:1d0b043ae4070387c8749ea72bdff515$"
+}
+}

@@ -1,0 +1,20 @@
+{"frames": {
+
+"A-low-poly-stylized-3D-sprite-of-a-cute-fox-charac-256px-36.png":
+{
+	"frame": {"x":0,"y":0,"w":1368,"h":1578},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":1368,"h":1578},
+	"sourceSize": {"w":1368,"h":1578}
+}},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "fox_clap.png",
+	"format": "RGBA8888",
+	"size": {"w":1368,"h":1578},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:c27493fb276cf627cacfe6e861590c5e:3636a57298922e7aab26af853d5be051:de04c7aa7264528b3bed61d74eb4fc80$"
+}
+}

@@ -1,0 +1,20 @@
+{"frames": {
+
+"Rotate-the-geometric-bunny-to-a-full-back-view-sta-256px-36.png":
+{
+	"frame": {"x":0,"y":0,"w":864,"h":1560},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":864,"h":1560},
+	"sourceSize": {"w":864,"h":1560}
+}},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "rabbit_breathing.png",
+	"format": "RGBA8888",
+	"size": {"w":864,"h":1560},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:6df393fcdd4d3dc006f929dced9a66bf:8a10f276be2709fa4c80a6da127bb326:b76da0cb3f6292b335e85b441f0be9fe$"
+}
+}

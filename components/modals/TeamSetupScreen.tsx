@@ -227,10 +227,19 @@ const TeamSetupScreen: React.FC<TeamSetupScreenProps> = ({ teams, onShuffle, onS
 
   return (
     <div className="w-full h-full flex flex-col justify-start items-center p-4 pt-16 relative">
+      {/* 배경 이미지 */}
+      <img 
+        src="/background.png" 
+        alt="Background" 
+        className="absolute inset-0 w-full h-full object-cover z-0"
+      />
+      {/* Glass 효과 오버레이 */}
+      <div className="absolute inset-0 bg-white/20 backdrop-blur-md z-[1]"></div>
+      
       {alertMessage && <AlertModal message={alertMessage} onClose={handleCloseAlert} />}
       
-      <h1 className="text-6xl font-bold text-accent-yellow drop-shadow-lg mb-16">Team Setup</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-6xl">
+      <h1 className="text-6xl font-bold text-accent-yellow drop-shadow-lg mb-16 relative z-10">Team Setup</h1>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-6xl relative z-10">
         <TeamBox 
           title="Team A" 
           teamColor="blue" 
@@ -252,7 +261,7 @@ const TeamSetupScreen: React.FC<TeamSetupScreenProps> = ({ teams, onShuffle, onS
           onDragEnd={handleDragEnd}
         />
       </div>
-      <div className="absolute bottom-8 left-8 right-8 flex justify-between">
+      <div className="absolute bottom-8 left-8 right-8 flex justify-between z-10">
         <button
           onClick={onShuffle}
           className="px-10 py-4 text-3xl font-bold text-white bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full shadow-2xl hover:scale-105 transition-transform"

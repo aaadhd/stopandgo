@@ -37,10 +37,11 @@ const GameHeader: React.FC<GameHeaderProps> = ({
 
   return (
     <div className="absolute inset-0 pointer-events-none z-50">
-      {/* Left: Title */}
-      <div className="absolute top-4 left-4">
-        <h1 
-          className="text-4xl font-bold text-white" 
+      {/* Left: Title and Round Info */}
+      <div className="absolute top-4 left-4 flex items-center gap-6">
+        {/* Title */}
+        <h1
+          className="text-4xl font-bold text-white"
           style={{
             fontFamily: "'Luckiest Guy', cursive",
             WebkitTextStroke: '2px #ca8a04',
@@ -49,14 +50,12 @@ const GameHeader: React.FC<GameHeaderProps> = ({
         >
           {title}
         </h1>
-      </div>
 
-      {/* Center: Round Info or Timer */}
-      <div className="absolute top-4 left-1/2 transform -translate-x-1/2">
+        {/* Round Info or Timer */}
         {showTimer ? (
           <div className="bg-white/80 backdrop-blur-sm rounded-full px-6 py-2 shadow-inner border-2 border-yellow-500 flex items-center gap-2">
             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="#ca8a04" d="M12 20a8 8 0 1 0 0-16a8 8 0 0 0 0 16m0 2a10 10 0 1 1 0-20a10 10 0 0 1 0 20M12.5 7v5.5l4.5 2.5l-.75 1.23l-5.25-3.1V7z"/></svg>
-            <h2 
+            <h2
               className="text-3xl font-bold text-yellow-800"
               style={{ fontFamily: "'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif" }}
             >

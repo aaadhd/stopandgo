@@ -1,0 +1,20 @@
+{"frames": {
+
+"Low-poly-3D-character-asset-of-a-cute-rabbit-viewe-256px-36 (1).png":
+{
+	"frame": {"x":0,"y":0,"w":984,"h":1566},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":984,"h":1566},
+	"sourceSize": {"w":984,"h":1566}
+}},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "rabbit_clap.png",
+	"format": "RGBA8888",
+	"size": {"w":984,"h":1566},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:9d7587170d433f2986898a7a0c244594:98d0d02c71b6e98fe814e387535f437f:4c91393e43852edcdfccbe94c657d2e8$"
+}
+}

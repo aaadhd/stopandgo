@@ -22,8 +22,19 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ scores, onPlayAgain }) =>
     }
 
     return (
-        <div className="absolute inset-0 bg-black/60 flex justify-center items-center z-50">
-            <div className="bg-white text-gray-800 p-12 rounded-[2.5rem] text-center shadow-2xl border-8 border-white">
+        <div className="absolute inset-0 flex justify-center items-center z-50">
+            {/* 배경 이미지 */}
+            <img 
+                src="/background.png" 
+                alt="Background" 
+                className="absolute inset-0 w-full h-full object-cover z-0"
+            />
+            {/* Glass 효과 오버레이 */}
+            <div className="absolute inset-0 bg-white/20 backdrop-blur-md z-[1]"></div>
+            {/* 어두운 오버레이 */}
+            <div className="absolute inset-0 bg-black/40 z-10"></div>
+            
+            <div className="bg-white text-gray-800 p-12 rounded-[2.5rem] text-center shadow-2xl border-8 border-white relative z-20">
                 <h1 className="text-8xl font-bold mb-4 tracking-tight">Game Over!</h1>
                 <h2 className={`text-3xl font-bold mb-10 ${winnerColor}`}>{winnerText}</h2>
                 <button

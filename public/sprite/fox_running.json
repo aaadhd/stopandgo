@@ -1,0 +1,20 @@
+{"frames": {
+
+"Position-the-low-poly-fox-subject-standing-straigh-256px-36.png":
+{
+	"frame": {"x":0,"y":0,"w":1224,"h":1650},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":1224,"h":1650},
+	"sourceSize": {"w":1224,"h":1650}
+}},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "rabbit.png",
+	"format": "RGBA8888",
+	"size": {"w":1224,"h":1650},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:5b7fdc131362b010316cf1508450cf8e:911012f5d22fda6b91031cbfc330485f:728f3986df73c95a11c23983e61158cd$"
+}
+}

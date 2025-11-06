@@ -1,0 +1,20 @@
+{"frames": {
+
+"Change-the-pose-to-a-direct-rear-view-with-the-rab-256px-36.png":
+{
+	"frame": {"x":0,"y":0,"w":780,"h":1662},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":780,"h":1662},
+	"sourceSize": {"w":780,"h":1662}
+}},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "rabbit.png",
+	"format": "RGBA8888",
+	"size": {"w":780,"h":1662},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:cd3dd64e88abb012847427ab692b6df8:ad205206180b4e32342584177cc1f288:728f3986df73c95a11c23983e61158cd$"
+}
+}
