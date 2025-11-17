@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { playSound } from '../../utils/audio';
+import { Team } from '../../types';
+import { TEAM_COLORS } from '../../constants';
 
 type RoundModalProps = {
     title: string;
@@ -8,9 +10,10 @@ type RoundModalProps = {
     onNext: () => void;
     isSuccess?: boolean | null;
     isCountdown?: boolean;
+    winner?: Team | null;
 };
 
-const RoundModal: React.FC<RoundModalProps> = ({ title, text, buttonText, onNext, isSuccess, isCountdown }) => {
+const RoundModal: React.FC<RoundModalProps> = ({ title, text, buttonText, onNext, isSuccess, isCountdown, winner }) => {
     const [isProcessing, setIsProcessing] = useState(false);
     const [showCountdown, setShowCountdown] = useState(false);
     const [countdown, setCountdown] = useState(3);
@@ -18,6 +21,31 @@ const RoundModal: React.FC<RoundModalProps> = ({ title, text, buttonText, onNext
     let titleColor = 'text-gray-800';
     if (isSuccess === true) titleColor = 'text-green-500';
     if (isSuccess === false) titleColor = 'text-red-500';
+
+    // 텍스트에서 팀 이름에 색상 적용
+    const renderColoredText = (text: string) => {
+        if (!winner) return text;
+        
+        const teamName = winner === 'cyan' ? 'Team A' : 'Team B';
+        const teamColor = TEAM_COLORS[winner].primary;
+        
+        // Team A 또는 Team B를 찾아서 색상 적용
+        const parts = text.split(teamName);
+        if (parts.length === 1) return text; // 팀 이름이 없으면 그대로 반환
+        
+        return (
+            <>
+                {parts.map((part, index) => (
+                    <React.Fragment key={index}>
+                        {part}
+                        {index < parts.length - 1 && (
+                            <span style={{ color: teamColor, fontWeight: 'bold' }}>{teamName}</span>
+                        )}
+                    </React.Fragment>
+                ))}
+            </>
+        );
+    };
 
     // 카운트다운 효과
     useEffect(() => {
@@ -79,7 +107,7 @@ const RoundModal: React.FC<RoundModalProps> = ({ title, text, buttonText, onNext
         <div className="absolute inset-0 bg-black/60 flex justify-center items-center z-50">
             <div className="bg-white text-gray-800 p-12 rounded-[2.5rem] text-center shadow-2xl border-8 border-white max-w-4xl">
                 <h2 className={`text-7xl font-bold mb-4 tracking-tight ${titleColor}`}>{title}</h2>
-                <p className="text-3xl mb-8">{text}</p>
+                <p className="text-3xl mb-8">{renderColoredText(text)}</p>
                 
                 {/* 게임 규칙 안내 - 라운드 시작 시에만 표시 */}
                 {isCountdown && (

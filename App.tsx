@@ -250,6 +250,7 @@ export default function App(): React.ReactNode {
                     buttonText={currentRound >= maxRounds ? 'See Final Results' : 'Next Round'}
                     onNext={roundEndState.nextAction}
                     isSuccess={roundEndState.isSuccess}
+                    winner={roundEndState.winner}
                 />
             )}
 
