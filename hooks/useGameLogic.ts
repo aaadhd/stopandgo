@@ -158,7 +158,7 @@ export const useGameLogic = () => {
                 gamePhase: GamePhase.ROUND_END,
                 roundEndState: {
                     title: isCorrect ? "Quiz Success!" : "Quiz Failed!",
-                    text: isCorrect ? `${team === 'cyan' ? 'Team A' : 'Team B'} gets 30 points! (+30 points)` : `${team === 'cyan' ? 'Team A' : 'Team B'} gets no points! (0 points)`,
+                    text: isCorrect ? `${team === 'cyan' ? 'Team A' : 'Team B'} gets 30 points!` : `${team === 'cyan' ? 'Team A' : 'Team B'} gets no points!`,
                     winner: team,
                     isSuccess: isCorrect,
                     nextAction: () => {
