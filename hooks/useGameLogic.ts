@@ -149,8 +149,8 @@ export const useGameLogic = () => {
         playSound(isCorrect ? 'quiz-correct' : 'quiz-incorrect');
         setGameState(prev => {
             const newScores = { ...prev.scores };
-            // 퀴즈 맞추면 30점, 틀리면 10점
-            newScores[team] += isCorrect ? 30 : 10;
+            // 퀴즈 맞추면 30점, 틀리면 0점
+            newScores[team] += isCorrect ? 30 : 0;
             
             return {
                 ...prev,
@@ -158,7 +158,7 @@ export const useGameLogic = () => {
                 gamePhase: GamePhase.ROUND_END,
                 roundEndState: {
                     title: isCorrect ? "Quiz Success!" : "Quiz Failed!",
-                    text: isCorrect ? `${team === 'cyan' ? 'Team A' : 'Team B'} gets 30 points! (+30 points)` : `${team === 'cyan' ? 'Team A' : 'Team B'} gets 10 points! (+10 points)`,
+                    text: isCorrect ? `${team === 'cyan' ? 'Team A' : 'Team B'} gets 30 points! (+30 points)` : `${team === 'cyan' ? 'Team A' : 'Team B'} gets no points! (0 points)`,
                     winner: team,
                     isSuccess: isCorrect,
                     nextAction: () => {
