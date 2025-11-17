@@ -4,27 +4,70 @@ import { useGameLogic } from './hooks/useGameLogic';
 import GameHeader from './components/GameHeader';
 import GameArea from './components/GameArea';
 import Controls from './components/Controls';
-import StartModal from './components/modals/StartModal';
 import RoundModal from './components/modals/RoundModal';
 import QuizModal from './components/modals/QuizModal';
 import GameOverModal from './components/modals/GameOverModal';
-import MenuModal from './components/modals/MenuModal';
+import GameMenuModal from './components/modals/GameMenuModal';
 import GameSettingsModal from './components/modals/GameSettingsModal';
 import PausedOverlay from './components/modals/PausedOverlay';
 import TeamSetupScreen from './components/modals/TeamSetupScreen';
+import TutorialModal from './components/modals/TutorialModal';
 
 export default function App(): React.ReactNode {
     const { gameState, teams, gameActions } = useGameLogic();
     const [showSplash, setShowSplash] = useState(false);
     const [isSplashFadingOut, setIsSplashFadingOut] = useState(false);
     const [isAnimating, setIsAnimating] = useState(true);
+    const [isMenuTutorialOpen, setIsMenuTutorialOpen] = useState(false);
     const splashTimerRef = useRef<NodeJS.Timeout | null>(null);
+    const bgmRef = useRef<HTMLAudioElement | null>(null);
 
     const {
-        gamePhase, scores, currentRound, timeLeft, positions,
+        gamePhase, scores, currentRound, maxRounds, timeLeft, positions,
         playerStatus, currentLight, items, roundEndState, quiz, isQuizLoading, currentWinner,
         showSettings
     } = gameState;
+
+    // 배경 음악 초기화
+    useEffect(() => {
+        if (!bgmRef.current) {
+            const audio = new Audio('/audios/bgm.mp3');
+            audio.loop = true;
+            audio.volume = 0.15;
+            bgmRef.current = audio;
+        }
+
+        return () => {
+            if (bgmRef.current) {
+                bgmRef.current.pause();
+                bgmRef.current = null;
+            }
+        };
+    }, []);
+
+    // 스플래시 또는 본 게임 단계에서 배경 음악 재생
+    useEffect(() => {
+        const audio = bgmRef.current;
+        if (!audio) {
+            return;
+        }
+
+        const shouldPlay = !showSettings && (showSplash || gamePhase !== GamePhase.START);
+
+        if (shouldPlay) {
+            const playPromise = audio.play();
+            if (playPromise !== undefined) {
+                playPromise.catch((error) => {
+                    console.warn('Background music playback was prevented:', error);
+                });
+            }
+        } else {
+            audio.pause();
+            if (showSettings || (!showSplash && gamePhase === GamePhase.START)) {
+                audio.currentTime = 0;
+            }
+        }
+    }, [showSplash, showSettings, gamePhase]);
 
     // 설정에서 Play를 누르면 스플래시 화면 표시
     useEffect(() => {
@@ -62,7 +105,36 @@ export default function App(): React.ReactNode {
     const showGameUI = gamePhase !== GamePhase.GAME_OVER;
     const isPlayingPhase = gamePhase === GamePhase.PLAYING;
     const isNonPlayingPhase = [GamePhase.START, GamePhase.ROUND_START, GamePhase.ROUND_END, GamePhase.QUIZ, GamePhase.GAME_OVER].includes(gamePhase);
-    const buttonsDisabled = gameState.isPaused || gameState.showMenu;
+    const buttonsDisabled = gameState.isPaused || gameState.showMenu || isMenuTutorialOpen;
+
+    const handleOpenMenu = () => {
+        setIsMenuTutorialOpen(false);
+        gameActions.openMenu();
+    };
+
+    const handleCloseMenu = () => {
+        setIsMenuTutorialOpen(false);
+        gameActions.closeMenu();
+    };
+
+    const handleOpenMenuGuide = () => {
+        setIsMenuTutorialOpen(true);
+        gameActions.closeMenu();
+    };
+
+    const handleCloseMenuTutorial = () => {
+        setIsMenuTutorialOpen(false);
+    };
+
+    const handleMenuEndGame = () => {
+        setIsMenuTutorialOpen(false);
+        gameActions.endGameFromMenu();
+    };
+
+    const handleMenuExit = () => {
+        setIsMenuTutorialOpen(false);
+        gameActions.exitGame();
+    };
 
     // 설정 화면 표시
     if (showSettings) {
@@ -112,6 +184,11 @@ export default function App(): React.ReactNode {
         );
     }
 
+    // GamePhase.START일 때는 스플래시 화면만 표시하고 게임 UI는 렌더링하지 않음
+    if (gamePhase === GamePhase.START) {
+        return null;
+    }
+
     return (
         <div
             className="w-full h-full bg-white shadow-lg relative overflow-hidden flex flex-col"
@@ -120,13 +197,14 @@ export default function App(): React.ReactNode {
                 <GameHeader
                     title="Stop & Go"
                     currentRound={currentRound}
+                    maxRounds={maxRounds}
                     showTimer={isPlayingPhase && !gameState.isPaused}
                     timerValue={timeLeft}
                     showPause={isPlayingPhase}
                     isPaused={gameState.isPaused}
                     onPause={gameState.isPaused ? gameActions.resumeGame : gameActions.pauseGame}
                     showMenuButton={isPlayingPhase}
-                    onOpenMenu={gameActions.openMenu}
+                    onOpenMenu={handleOpenMenu}
                     showExitButton={isNonPlayingPhase && gamePhase !== GamePhase.GAME_OVER}
                     onExit={gameActions.exitGame}
                     buttonsDisabled={buttonsDisabled}
@@ -142,6 +220,7 @@ export default function App(): React.ReactNode {
                                 scores={scores}
                                 currentRound={currentRound}
                                 teams={teams}
+                                onAddCheerPoints={gameActions.addCheerPoints}
                             />
                         )}
 
@@ -152,12 +231,6 @@ export default function App(): React.ReactNode {
                     isGameActive={gamePhase === GamePhase.PLAYING}
                     currentLight={currentLight}
                 />
-            )}
-
-            {gamePhase === GamePhase.START && (
-                <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <StartModal onStart={gameActions.startGame} />
-                </div>
             )}
 
             {gamePhase === GamePhase.ROUND_START && (
@@ -174,7 +247,7 @@ export default function App(): React.ReactNode {
                 <RoundModal
                     title={roundEndState.title}
                     text={roundEndState.text}
-                    buttonText={currentRound >= 5 ? 'See Final Results' : 'Next Round'}
+                    buttonText={currentRound >= maxRounds ? 'See Final Results' : 'Next Round'}
                     onNext={roundEndState.nextAction}
                     isSuccess={roundEndState.isSuccess}
                 />
@@ -198,12 +271,20 @@ export default function App(): React.ReactNode {
             )}
 
             {gameState.showMenu && (
-                <MenuModal
-                    onResume={gameActions.closeMenu}
-                    onEndGame={gameActions.endGameFromMenu}
-                    onExit={gameActions.exitGame}
+                <GameMenuModal
+                    isOpen={gameState.showMenu}
+                    onClose={handleCloseMenu}
+                    onOpenGuide={handleOpenMenuGuide}
+                    onEndGame={handleMenuEndGame}
+                    onExit={handleMenuExit}
                 />
             )}
+
+            <TutorialModal
+                isOpen={isMenuTutorialOpen}
+                onClose={handleCloseMenuTutorial}
+                variant="stage"
+            />
         </div>
     );
 }

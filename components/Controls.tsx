@@ -18,7 +18,7 @@ const ControlButton: React.FC<{
 }> = ({ team, onClick, disabled, currentLight, isVisuallyActive = false }) => {
     const teamColor = TEAM_COLORS[team];
     // GO 버튼을 양 사이드에 배치
-    const leftPosition = team === 'red' ? 'left-8' : 'right-8';
+    const leftPosition = team === 'cyan' ? 'left-8' : 'right-8';
     const pulseAnimation = !disabled && currentLight === 'green' ? 'animation-go-pulse button-green-glow' : '';
 
     const handlePress = (e: React.MouseEvent | React.TouchEvent) => {
@@ -31,17 +31,17 @@ const ControlButton: React.FC<{
     // 신호등 스타일 참고 (10% 투명도 적용)
     // 게임이 활성화되어 있고 버튼이 사용 가능할 때만 활성화 색으로 표시
     const isActiveColor = isVisuallyActive;
-    const buttonStyle = team === 'red' 
+    const buttonStyle = team === 'cyan'
         ? {
             background: isActiveColor ? 'rgba(8, 145, 178, 0.9)' : 'rgba(74, 74, 74, 0.9)',
-            boxShadow: isActiveColor 
+            boxShadow: isActiveColor
                 ? '0 4px 8px rgba(0,0,0,.4), 0 2px 4px rgba(0,0,0,.3), 0 0 12px rgba(8,145,178,.5)'
                 : '0 4px 8px rgba(0,0,0,.4), 0 2px 4px rgba(0,0,0,.3)',
             border: isActiveColor ? '1.5px solid #0e7490' : '1.5px solid #555555'
         }
         : {
             background: isActiveColor ? 'rgba(147, 51, 234, 0.9)' : 'rgba(74, 74, 74, 0.9)',
-            boxShadow: isActiveColor 
+            boxShadow: isActiveColor
                 ? '0 4px 8px rgba(0,0,0,.4), 0 2px 4px rgba(0,0,0,.3), 0 0 12px rgba(147,51,234,.5)'
                 : '0 4px 8px rgba(0,0,0,.4), 0 2px 4px rgba(0,0,0,.3)',
             border: isActiveColor ? '1.5px solid #7c3aed' : '1.5px solid #555555'
@@ -69,18 +69,30 @@ const ControlButton: React.FC<{
 };
 
 const Controls: React.FC<ControlsProps> = ({ onGo, playerStatus, isGameActive, currentLight }) => {
-    const someoneWon = playerStatus.red.isWinner || playerStatus.blue.isWinner;
+    const someoneWon = playerStatus.cyan.isWinner || playerStatus.purple.isWinner;
     // 클릭 가능 여부만 결정 (색상은 항상 활성화 색으로 표시)
-    const isRedDisabled = !isGameActive || playerStatus.red.isFrozen || someoneWon;
-    const isBlueDisabled = !isGameActive || playerStatus.blue.isFrozen || someoneWon;
+    const isCyanDisabled = !isGameActive || playerStatus.cyan.isFrozen || someoneWon;
+    const isPurpleDisabled = !isGameActive || playerStatus.purple.isFrozen || someoneWon;
     // 게임이 활성화되어 있으면 시각적으로는 활성화 색으로 표시
-    const isRedVisuallyActive = isGameActive && !playerStatus.red.isFrozen && !someoneWon;
-    const isBlueVisuallyActive = isGameActive && !playerStatus.blue.isFrozen && !someoneWon;
+    const isCyanVisuallyActive = isGameActive && !playerStatus.cyan.isFrozen && !someoneWon;
+    const isPurpleVisuallyActive = isGameActive && !playerStatus.purple.isFrozen && !someoneWon;
 
     return (
         <div className="absolute inset-0 pointer-events-none z-40">
-            <ControlButton team="red" onClick={() => onGo('red')} disabled={isRedDisabled} currentLight={currentLight} isVisuallyActive={isRedVisuallyActive} />
-            <ControlButton team="blue" onClick={() => onGo('blue')} disabled={isBlueDisabled} currentLight={currentLight} isVisuallyActive={isBlueVisuallyActive} />
+            <ControlButton
+                team="cyan"
+                onClick={() => onGo('cyan')}
+                disabled={isCyanDisabled}
+                currentLight={currentLight}
+                isVisuallyActive={isCyanVisuallyActive}
+            />
+            <ControlButton
+                team="purple"
+                onClick={() => onGo('purple')}
+                disabled={isPurpleDisabled}
+                currentLight={currentLight}
+                isVisuallyActive={isPurpleVisuallyActive}
+            />
         </div>
     );
 };

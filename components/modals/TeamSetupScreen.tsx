@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
-import type { Teams, Player, TeamColor, DragItem } from '../types';
+import React, { useState, useMemo } from 'react';
+import type { Teams, Player, TeamColor, DragItem } from '../../types';
+import { createAvatar } from '@dicebear/core';
+import * as openPeeps from '@dicebear/open-peeps';
 
 interface TeamSetupScreenProps {
   teams: Teams;
@@ -67,6 +69,16 @@ const PlayerCard: React.FC<PlayerCardProps> = ({
     onDragStart({ player, sourceTeam: team, sourceIndex: index });
   };
 
+  // DiceBear 아바타 생성
+  const avatarSvg = useMemo(() => {
+    const avatar = createAvatar(openPeeps, {
+      seed: player.avatarEmoji || player.name,
+      size: 112,
+      backgroundColor: ['e3f2fd'],
+    });
+    return avatar.toDataUri();
+  }, [player.avatarEmoji, player.name]);
+
   return (
     <div
       draggable
@@ -75,9 +87,18 @@ const PlayerCard: React.FC<PlayerCardProps> = ({
       className={`flex flex-col items-center cursor-move transition-all duration-200 ${
         isDragging ? 'opacity-50 scale-95' : 'hover:scale-105'
       }`}
+      style={{
+        animation: isDragging ? 'none' : 'float 3s ease-in-out infinite',
+        animationDelay: `${index * 0.2}s`
+      }}
     >
-      <div className="w-28 h-28 rounded-full bg-white flex justify-center items-center text-6xl border-4 border-gray-300 shadow-md">
-        {player.avatarEmoji}
+      <div className="w-28 h-28 rounded-full bg-white flex justify-center items-center border-4 border-gray-300 shadow-md overflow-hidden">
+        <img 
+          src={avatarSvg} 
+          alt={player.name}
+          className="w-full h-full object-cover"
+          draggable={false}
+        />
       </div>
       <span className="mt-2 text-gray-700 font-bold text-base">{player.name}</span>
     </div>
@@ -115,7 +136,7 @@ const TeamBox: React.FC<TeamBoxProps> = ({
 
   // 팀별 색상 정의
   const getTeamStyles = (teamColor: string) => {
-    if (teamColor === 'blue') {
+    if (teamColor === 'cyan') {
       return {
         borderColor: '#0891b2',
         textColor: '#0891b2'
@@ -171,9 +192,9 @@ const TeamSetupScreen: React.FC<TeamSetupScreenProps> = ({ teams, onShuffle, onS
     setDraggedItem(null);
   };
 
-  const handleStartGame = () => {
-    const teamACount = teams.blue.length;
-    const teamBCount = teams.red.length;
+  const handleStartGame = async () => {
+    const teamACount = teams.cyan.length;
+    const teamBCount = teams.purple.length;
     const totalPlayers = teamACount + teamBCount;
 
     // 총 플레이어가 2명 미만인 경우
@@ -189,8 +210,8 @@ const TeamSetupScreen: React.FC<TeamSetupScreenProps> = ({ teams, onShuffle, onS
       return;
     }
 
-    // 유효성 검사 통과 시 게임 시작
-    onStart();
+    // 유효성 검사 통과 시 게임 시작 (이미지 프리로드 포함)
+    await onStart();
   };
 
   const handleCloseAlert = () => {
@@ -231,37 +252,41 @@ const TeamSetupScreen: React.FC<TeamSetupScreenProps> = ({ teams, onShuffle, onS
       <img 
         src="/background.png" 
         alt="Background" 
-        className="absolute inset-0 w-full h-full object-cover z-0"
+        className="absolute inset-0 w-full h-full object-cover"
+        style={{ zIndex: 0 }}
       />
       {/* Glass 효과 오버레이 */}
-      <div className="absolute inset-0 bg-white/20 backdrop-blur-md z-[1]"></div>
+      <div 
+        className="absolute inset-0 bg-white/20 backdrop-blur-md" 
+        style={{ zIndex: 1, willChange: 'auto' }}
+      ></div>
       
       {alertMessage && <AlertModal message={alertMessage} onClose={handleCloseAlert} />}
       
-      <h1 className="text-6xl font-bold text-accent-yellow drop-shadow-lg mb-16 relative z-10">Team Setup</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-6xl relative z-10">
-        <TeamBox 
-          title="Team A" 
-          teamColor="blue" 
-          players={teams.blue} 
-          team="blue"
+      <h1 className="text-6xl font-bold text-accent-yellow drop-shadow-lg mb-16" style={{ position: 'relative', zIndex: 2 }}>Team Setup</h1>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-6xl" style={{ position: 'relative', zIndex: 2 }}>
+        <TeamBox
+          title="Team A"
+          teamColor="cyan"
+          players={teams.cyan}
+          team="cyan"
           onDrop={handleDrop}
           onDragOver={handleDragOver}
           onDragStart={handleDragStart}
           onDragEnd={handleDragEnd}
         />
-        <TeamBox 
-          title="Team B" 
-          teamColor="red" 
-          players={teams.red} 
-          team="red"
+        <TeamBox
+          title="Team B"
+          teamColor="purple"
+          players={teams.purple}
+          team="purple"
           onDrop={handleDrop}
           onDragOver={handleDragOver}
           onDragStart={handleDragStart}
           onDragEnd={handleDragEnd}
         />
       </div>
-      <div className="absolute bottom-8 left-8 right-8 flex justify-between z-10">
+      <div className="absolute bottom-8 left-8 right-8 flex justify-between" style={{ zIndex: 2 }}>
         <button
           onClick={onShuffle}
           className="px-10 py-4 text-3xl font-bold text-white bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full shadow-2xl hover:scale-105 transition-transform"

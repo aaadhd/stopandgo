@@ -3,11 +3,11 @@ import { Quiz, Team } from '../../types';
 
 // ===== Constants =====
 const TEAM_COLORS = {
-  red: {
+  cyan: {
     name: 'text-[#0891b2]',
     line: 'bg-[#0891b2]',
   },
-  blue: {
+  purple: {
     name: 'text-[#9333ea]',
     line: 'bg-[#9333ea]',
   },
@@ -92,7 +92,7 @@ const QuizModal: React.FC<QuizModalProps> = ({ quiz, isLoading, winnerTeam, onAn
             setIsExiting(false);
             setUserAnswer(null);
         }
-        
+
         return () => {
             if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
         };
@@ -135,7 +135,7 @@ const QuizModal: React.FC<QuizModalProps> = ({ quiz, isLoading, winnerTeam, onAn
                 {/* 상단 헤더 */}
                 <div className="flex justify-between items-center mb-8">
                     <div className={`text-2xl font-bold ${teamColor.name}`}>
-                        {winnerTeam === 'red' ? 'Team A' : 'Team B'}'s Chance!
+                        {winnerTeam === 'cyan' ? 'Team A' : 'Team B'}'s Chance!
                     </div>
                     <div className="flex items-center gap-2 text-2xl font-bold text-cyan-500">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" viewBox="0 0 20 20" fill="currentColor">

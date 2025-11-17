@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Team } from '../../types';
 import { TEAM_COLORS } from '../../constants';
+import { playSound } from '../../utils/audio';
 
 type GameOverModalProps = {
     scores: { [key in Team]: number };
@@ -8,35 +9,42 @@ type GameOverModalProps = {
 };
 
 const GameOverModal: React.FC<GameOverModalProps> = ({ scores, onPlayAgain }) => {
-    let winnerText, winnerColor;
+    let winnerText, winnerColor, winnerEmoji;
 
-    if (scores.red > scores.blue) {
+    if (scores.cyan > scores.purple) {
         winnerText = '🎉 Team A Wins! 🎉';
-        winnerColor = TEAM_COLORS.red.text;
-    } else if (scores.blue > scores.red) {
+        winnerEmoji = '';
+        winnerColor = TEAM_COLORS.cyan.text;
+    } else if (scores.purple > scores.cyan) {
         winnerText = '🎉 Team B Wins! 🎉';
-        winnerColor = TEAM_COLORS.blue.text;
+        winnerEmoji = '';
+        winnerColor = TEAM_COLORS.purple.text;
     } else {
         winnerText = "It's a Tie! Great job!";
+        winnerEmoji = '';
         winnerColor = 'text-gray-800';
     }
 
+    // 게임 오버 시 축하 효과음
+    useEffect(() => {
+        playSound('game-over-win');
+    }, []);
+
     return (
         <div className="absolute inset-0 flex justify-center items-center z-50">
-            {/* 배경 이미지 */}
-            <img 
-                src="/background.png" 
-                alt="Background" 
+            {/* 배경 이미지 with blur */}
+            <img
+                src="/background.png"
+                alt="Background"
                 className="absolute inset-0 w-full h-full object-cover z-0"
+                style={{ filter: 'blur(8px)' }}
             />
-            {/* Glass 효과 오버레이 */}
-            <div className="absolute inset-0 bg-white/20 backdrop-blur-md z-[1]"></div>
-            {/* 어두운 오버레이 */}
-            <div className="absolute inset-0 bg-black/40 z-10"></div>
-            
-            <div className="bg-white text-gray-800 p-12 rounded-[2.5rem] text-center shadow-2xl border-8 border-white relative z-20">
-                <h1 className="text-8xl font-bold mb-4 tracking-tight">Game Over!</h1>
-                <h2 className={`text-3xl font-bold mb-10 ${winnerColor}`}>{winnerText}</h2>
+            {/* 화이트 오버레이 */}
+            <div className="absolute inset-0 bg-white/20 z-[1] pointer-events-none"></div>
+
+            <div className="bg-white text-gray-800 p-12 rounded-[2.5rem] text-center shadow-2xl border-8 border-white relative z-10">
+                <h2 className={`text-6xl font-bold mb-6 ${winnerColor}`}>{winnerText}</h2>
+                <h1 className="text-4xl font-bold mb-10 tracking-tight text-gray-600">Game Over!</h1>
                 <button
                     onClick={onPlayAgain}
                     className="text-4xl font-bold py-5 px-12 rounded-3xl text-white cursor-pointer transition-all active:scale-95 active:translate-y-1 hover:brightness-110"

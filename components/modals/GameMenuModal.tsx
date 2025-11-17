@@ -1,52 +1,65 @@
 import React from 'react';
 
 interface GameMenuModalProps {
-  onResume: () => void;
+  isOpen: boolean;
+  onClose: () => void;
+  onOpenGuide: () => void;
   onEndGame: () => void;
   onExit: () => void;
+  buttonLabels?: {
+    menuTitle?: string;
+    guide?: string;
+    endGame?: string;
+    exit?: string;
+  };
 }
 
 const GameMenuModal: React.FC<GameMenuModalProps> = ({
-  onResume,
+  isOpen,
+  onClose,
+  onOpenGuide,
   onEndGame,
   onExit,
+  buttonLabels = {},
 }) => {
+  if (!isOpen) {
+    return null;
+  }
+
   return (
-    <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-2xl p-8 shadow-2xl max-w-md w-full mx-4">
-        <div className="text-center mb-8">
-          <h2 
-            className="text-4xl font-bold text-yellow-800 mb-2"
-            style={{ fontFamily: "'Fredoka One', cursive" }}
-          >
-            Game Menu
-          </h2>
-          <p className="text-gray-600 text-lg">What would you like to do?</p>
-        </div>
+    <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[500]">
+      <div className="bg-white rounded-2xl p-8 text-center relative w-[560px] shadow-2xl">
+        <button
+          onClick={onClose}
+          className="absolute focus:outline-none"
+          style={{ top: '20px', right: '40px', width: '48px', height: '48px' }}
+          aria-label="Close menu"
+        >
+          <img src="/button/close.png" alt="Close" className="w-full h-full" />
+        </button>
 
-        <div className="space-y-4">
+        <h2 className="text-4xl font-display text-slate-800 mb-8">
+          {buttonLabels.menuTitle ?? 'Game Menu'}
+        </h2>
+
+        <div className="flex flex-col gap-4">
           <button
-            onClick={onResume}
-            className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-6 rounded-xl text-xl transition-all transform hover:scale-105 shadow-lg"
-            style={{ fontFamily: "'Fredoka One', cursive" }}
+            onClick={onOpenGuide}
+            className="px-8 py-4 text-2xl font-display text-white bg-blue-500 hover:bg-blue-600 rounded-full shadow-lg transition-transform transform hover:scale-105"
           >
-            Resume Game
+            {buttonLabels.guide ?? 'Game Guide'}
           </button>
-
           <button
             onClick={onEndGame}
-            className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 px-6 rounded-xl text-xl transition-all transform hover:scale-105 shadow-lg"
-            style={{ fontFamily: "'Fredoka One', cursive" }}
+            className="px-8 py-4 text-2xl font-display text-white bg-orange-500 hover:bg-orange-600 rounded-full shadow-lg transition-transform transform hover:scale-105"
           >
-            End Game
+            {buttonLabels.endGame ?? 'End Game'}
           </button>
-
           <button
             onClick={onExit}
-            className="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-4 px-6 rounded-xl text-xl transition-all transform hover:scale-105 shadow-lg"
-            style={{ fontFamily: "'Fredoka One', cursive" }}
+            className="px-8 py-4 text-2xl font-display text-white bg-red-500 hover:bg-red-600 rounded-full shadow-lg transition-transform transform hover:scale-105"
           >
-            Exit
+            {buttonLabels.exit ?? 'Exit'}
           </button>
         </div>
       </div>

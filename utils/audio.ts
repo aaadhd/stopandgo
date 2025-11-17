@@ -20,6 +20,8 @@ export type SoundType =
     | 'start'
     | 'click'
     | 'move'
+    | 'move-boost'
+    | 'move-slow'
     | 'penalty'
     | 'collect-good'
     | 'collect-bad'
@@ -28,7 +30,14 @@ export type SoundType =
     | 'quiz-correct'
     | 'quiz-incorrect'
     | 'game-over-win'
-    | 'shield-break';
+    | 'shield-break'
+    | 'countdown'
+    | 'countdown-go'
+    | 'button-hover'
+    | 'item-appear'
+    | 'item-disappear'
+    | 'frozen'
+    | 'slowed';
 
 
 /**
@@ -73,6 +82,12 @@ const playSoundLogic = (ctx: AudioContext, type: SoundType) => {
             break;
         case 'move':
             playTone(1200 + Math.random() * 200, 0.03, 'square', 0.1);
+            break;
+        case 'move-boost':
+            playTone(1600 + Math.random() * 200, 0.04, 'sine', 0.15);
+            break;
+        case 'move-slow':
+            playTone(600 + Math.random() * 100, 0.06, 'triangle', 0.08);
             break;
         case 'penalty':
              const osc = ctx.createOscillator();
@@ -145,6 +160,43 @@ const playSoundLogic = (ctx: AudioContext, type: SoundType) => {
                 { freq: 523.25, duration: 0.1, delay: 450 },
                 { freq: 783.99, duration: 0.4, delay: 600, vol: 0.35 },
             ]);
+            break;
+        case 'countdown':
+            // 카운트다운 숫자 소리 (3, 2, 1)
+            playTone(659.26, 0.15, 'sine', 0.3); // E5
+            break;
+        case 'countdown-go':
+            // GO! 소리 (더 흥분되는 소리)
+            playSequence([
+                { freq: 783.99, duration: 0.1, delay: 0, wave: 'sine' },   // G5
+                { freq: 1046.50, duration: 0.2, delay: 100, wave: 'sine', vol: 0.35 },  // C6
+            ]);
+            break;
+        case 'button-hover':
+            // 버튼 호버 소리 (미세한 피드백)
+            playTone(880, 0.05, 'sine', 0.1);
+            break;
+        case 'item-appear':
+            // 아이템 나타남 (반짝이는 소리)
+            playSequence([
+                { freq: 1046.50, duration: 0.05, delay: 0, wave: 'sine', vol: 0.15 },
+                { freq: 1318.51, duration: 0.08, delay: 60, wave: 'sine', vol: 0.15 },
+            ]);
+            break;
+        case 'item-disappear':
+            // 아이템 사라짐 (페이드 아웃)
+            playTone(880, 0.15, 'sine', 0.1);
+            break;
+        case 'frozen':
+            // 얼음 효과 (차가운 소리)
+            playSequence([
+                { freq: 1318.51, duration: 0.08, delay: 0, wave: 'triangle', vol: 0.2 },
+                { freq: 1046.50, duration: 0.1, delay: 90, wave: 'triangle', vol: 0.15 },
+            ]);
+            break;
+        case 'slowed':
+            // 느려짐 효과 (처지는 소리)
+            playTone(440, 0.2, 'sawtooth', 0.15);
             break;
     }
 };

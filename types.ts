@@ -1,5 +1,5 @@
 
-export type Team = 'red' | 'blue';
+export type Team = 'cyan' | 'purple';
 
 export enum GamePhase {
     START = 'START',
@@ -60,7 +60,7 @@ export type GameSettings = {
 };
 
 // 팀 세팅 관련 타입 정의
-export type TeamColor = 'blue' | 'red';
+export type TeamColor = 'purple' | 'cyan';
 
 export interface Player {
   id: string;
@@ -70,8 +70,8 @@ export interface Player {
 }
 
 export interface Teams {
-  blue: Player[];
-  red: Player[];
+  purple: Player[];
+  cyan: Player[];
 }
 
 // 드래그 앤 드롭 관련 타입
@@ -85,6 +85,7 @@ export type GameState = {
     gamePhase: GamePhase;
     scores: { [key in Team]: number };
     currentRound: number;
+    maxRounds: number;
     timeLeft: number;
     positions: { [key in Team]: number };
     playerStatus: PlayerStatuses;

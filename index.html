@@ -873,6 +873,16 @@
       .quiz-locked {
         pointer-events: none;
       }
+
+      /* 동동 떠있는 효과 */
+      @keyframes float {
+        0%, 100% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+      }
     </style>
   <script type="importmap">
 {

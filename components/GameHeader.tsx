@@ -3,6 +3,7 @@ import React from 'react';
 interface GameHeaderProps {
   title: string;
   currentRound?: number;
+  maxRounds?: number;
   onPause?: () => void;
   showPause?: boolean;
   isPaused?: boolean;
@@ -18,6 +19,7 @@ interface GameHeaderProps {
 const GameHeader: React.FC<GameHeaderProps> = ({
   title,
   currentRound,
+  maxRounds,
   onPause,
   showPause = false,
   isPaused = false,

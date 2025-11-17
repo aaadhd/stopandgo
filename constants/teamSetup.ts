@@ -2,8 +2,8 @@ import type { Player, Teams, TeamColor } from '../types';
 
 // 팀 마스코트 정의
 export const TEAM_MASCOTS: { [key in TeamColor]: string } = {
-  blue: '🐻', // Bear
-  red: '🦊'   // Fox
+  cyan: '🐻', // Bear
+  purple: '🦊'   // Fox
 };
 
 // 목업 플레이어 데이터 (총 11명: Team A 6명, Team B 5명)
@@ -23,35 +23,35 @@ export const MOCK_PLAYERS: Omit<Player, 'team'>[] = [
 
 // 팀 초기화 유틸리티 함수 (Team A: 6명, Team B: 5명)
 export const initializeTeams = (players: Omit<Player, 'team'>[]): Teams => {
-  const blue: Player[] = [];
-  const red: Player[] = [];
-  
-  // Team A (blue)에 처음 6명 배치
+  const cyan: Player[] = [];
+  const purple: Player[] = [];
+
+  // Team A (cyan)에 처음 6명 배치
   players.slice(0, 6).forEach((player) => {
-    blue.push({ ...player, team: 'blue' });
+    cyan.push({ ...player, team: 'cyan' });
   });
-  
-  // Team B (red)에 나머지 5명 배치
+
+  // Team B (purple)에 나머지 5명 배치
   players.slice(6).forEach((player) => {
-    red.push({ ...player, team: 'red' });
+    purple.push({ ...player, team: 'purple' });
   });
-  
-  return { blue, red };
+
+  return { cyan, purple };
 };
 
 // 팀 셔플 유틸리티 함수
 export const shuffleTeams = (teams: Teams): Teams => {
-  const allPlayers = [...teams.blue, ...teams.red].sort(() => Math.random() - 0.5);
-  const blue: Player[] = [];
-  const red: Player[] = [];
-  
+  const allPlayers = [...teams.cyan, ...teams.purple].sort(() => Math.random() - 0.5);
+  const cyan: Player[] = [];
+  const purple: Player[] = [];
+
   allPlayers.forEach((player, index) => {
     if (index % 2 === 0) {
-      blue.push({ ...player, team: 'blue' });
+      cyan.push({ ...player, team: 'cyan' });
     } else {
-      red.push({ ...player, team: 'red' });
+      purple.push({ ...player, team: 'purple' });
     }
   });
-  
-  return { blue, red };
+
+  return { cyan, purple };
 };

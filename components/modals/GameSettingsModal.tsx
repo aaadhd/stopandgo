@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import { GameSettings } from '../../types';
+import TutorialModal from './TutorialModal';
+import SettingsGuideModal from './SettingsGuideModal';
+import { preloadImages } from '../../utils/preloadImages';
 
 interface GameSettingsModalProps {
   onStart: (settings: GameSettings) => void;
@@ -15,6 +18,8 @@ const GameSettingsModal: React.FC<GameSettingsModalProps> = ({ onStart, onBack }
     rounds: 6,
     totalTime: 0
   });
+  const [isTutorialOpen, setIsTutorialOpen] = useState(false);
+  const [isGuideOpen, setIsGuideOpen] = useState(false);
 
   const lessons = [1, 2, 3, 4, 5, 6, 7, 8];
   const learningFocusOptions = ['Vocabulary', 'Reading', 'Speaking', 'Grammar', 'Writing', 'Action Learning'];
@@ -42,18 +47,38 @@ const GameSettingsModal: React.FC<GameSettingsModalProps> = ({ onStart, onBack }
   const updateRounds = (delta: number) => {
     setSettings(prev => ({
       ...prev,
-      rounds: Math.max(1, Math.min(10, prev.rounds + delta))
+      rounds: Math.max(1, Math.min(12, prev.rounds + delta))
     }));
   };
 
-  const updateTotalTime = (delta: number) => {
-    setSettings(prev => ({
-      ...prev,
-      totalTime: Math.max(0, Math.min(60, prev.totalTime + delta))
-    }));
+  const handlePlay = async () => {
+    try {
+      // 게임에서 사용되는 모든 이미지 URL
+      const imageUrls = [
+        '/background.png',
+        '/stopandgo.png',
+        '/images/forest.png',
+        '/images/undersea.png',
+        '/images/space.png',
+      ];
+
+      // 이미지 프리로드 완료를 기다림
+      await preloadImages(imageUrls);
+      
+      // 프리로드 완료 후 게임 시작
+      onStart(settings);
+    } catch (error) {
+      console.error('Failed to preload game assets:', error);
+      // 에러가 발생해도 게임은 시작
+      onStart(settings);
+    }
   };
+
+  const canDecreaseRounds = settings.rounds > 1;
+  const canIncreaseRounds = settings.rounds < 12;
 
   return (
+    <>
     <div className="absolute inset-0 bg-gradient-to-b from-purple-50 to-purple-100 flex flex-col z-50">
        {/* Header with Navigation Buttons - Fixed */}
        <div className="flex justify-between items-center p-4 pl-6 pr-6 z-10">
@@ -70,7 +95,10 @@ const GameSettingsModal: React.FC<GameSettingsModalProps> = ({ onStart, onBack }
         {/* Right Side Buttons */}
         <div className="flex gap-3">
           {/* Info Button */}
-          <button className="w-10 h-10 bg-purple-300 text-white rounded-full flex items-center justify-center hover:bg-purple-400 transition-all shadow-sm">
+          <button
+            onClick={() => setIsGuideOpen(true)}
+            className="w-10 h-10 bg-purple-300 text-white rounded-full flex items-center justify-center hover:bg-purple-400 transition-all shadow-sm"
+          >
             <span className="text-sm font-bold">i</span>
           </button>
           
@@ -98,7 +126,10 @@ const GameSettingsModal: React.FC<GameSettingsModalProps> = ({ onStart, onBack }
                   className="w-full h-full object-cover"
                 />
             </div>
-            <button className="bg-purple-200 text-purple-800 px-6 py-3 rounded-full font-semibold">
+            <button
+              onClick={() => setIsTutorialOpen(true)}
+              className="bg-purple-200 text-purple-800 px-6 py-3 rounded-full font-semibold"
+            >
               Game Guide
             </button>
           </div>
@@ -110,10 +141,10 @@ const GameSettingsModal: React.FC<GameSettingsModalProps> = ({ onStart, onBack }
           <div className="flex-1 overflow-y-auto p-2 pr-6">
             <div className="max-w-4xl mx-auto space-y-3">
             
-            {/* Choose Range */}
+            {/* Select Range */}
             <div className="bg-white rounded-2xl p-3 shadow-sm">
               <div className="flex items-center justify-between mb-2">
-                <h3 className="text-lg font-bold text-gray-800">Choose Range</h3>
+                <h3 className="text-lg font-bold text-gray-800">Select Range</h3>
                 <p className="text-xs text-purple-600">(Multiple selection allowed)</p>
               </div>
               <div className="grid grid-cols-4 gap-3">
@@ -136,10 +167,10 @@ const GameSettingsModal: React.FC<GameSettingsModalProps> = ({ onStart, onBack }
               </div>
             </div>
 
-            {/* Choose Learning Focus */}
+            {/* Select Learning Focus */}
             <div className="bg-white rounded-2xl p-3 shadow-sm">
               <div className="flex items-center justify-between mb-2">
-                <h3 className="text-lg font-bold text-gray-800">Choose Learning Focus</h3>
+                <h3 className="text-lg font-bold text-gray-800">Select Learning Focus</h3>
                 <p className="text-xs text-purple-600">(Multiple selection allowed)</p>
               </div>
               <div className="flex gap-3">
@@ -209,44 +240,18 @@ const GameSettingsModal: React.FC<GameSettingsModalProps> = ({ onStart, onBack }
                 </div>
               </div>
 
-              {/* Question Order */}
-              <div className="bg-white rounded-2xl p-3 shadow-sm">
-                <h3 className="text-lg font-bold text-gray-800 mb-2">Question Order</h3>
-                <div className="flex gap-4">
-                  <button
-                    onClick={() => setSettings(prev => ({ ...prev, questionOrder: 'same' }))}
-                    className={`flex-1 px-3 py-1 rounded-xl font-semibold text-base transition-all h-[54px] ${
-                      settings.questionOrder === 'same'
-                        ? 'bg-purple-600 text-white shadow-sm'
-                        : 'bg-white text-purple-700 border border-purple-300 hover:bg-purple-50'
-                    }`}
-                  >
-                    <div className="text-center flex items-center justify-center h-full">
-                      <div className="font-bold">Same for All</div>
-                    </div>
-                  </button>
-                  <button
-                    onClick={() => setSettings(prev => ({ ...prev, questionOrder: 'randomized' }))}
-                    className={`flex-1 px-3 py-1 rounded-xl font-semibold text-base transition-all h-[54px] ${
-                      settings.questionOrder === 'randomized'
-                        ? 'bg-purple-600 text-white shadow-sm'
-                        : 'bg-white text-purple-700 border border-purple-300 hover:bg-purple-50'
-                    }`}
-                  >
-                    <div className="text-center flex items-center justify-center h-full">
-                      <div className="font-bold">Randomized</div>
-                    </div>
-                  </button>
-                </div>
-              </div>
-
               {/* Rounds */}
               <div className="bg-white rounded-2xl p-3 shadow-sm">
                 <h3 className="text-lg font-bold text-gray-800 mb-2">Rounds</h3>
                 <div className="flex items-center justify-center gap-4">
                   <button
                     onClick={() => updateRounds(-1)}
-                    className="w-10 h-10 bg-purple-200 text-purple-800 rounded-full font-bold text-lg hover:bg-purple-300 transition-all border-0"
+                    disabled={!canDecreaseRounds}
+                    className={`w-10 h-10 rounded-full font-bold text-lg transition-all border-0 ${
+                      canDecreaseRounds
+                        ? 'bg-purple-200 text-purple-800 hover:bg-purple-300'
+                        : 'bg-gray-200 text-white cursor-not-allowed'
+                    }`}
                   >
                     -
                   </button>
@@ -255,37 +260,12 @@ const GameSettingsModal: React.FC<GameSettingsModalProps> = ({ onStart, onBack }
                   </div>
                   <button
                     onClick={() => updateRounds(1)}
-                    className="w-10 h-10 bg-purple-200 text-purple-800 rounded-full font-bold text-lg hover:bg-purple-300 transition-all border-0"
-                  >
-                    +
-                  </button>
-                </div>
-              </div>
-
-              {/* Total Game Time */}
-              <div className="bg-white rounded-2xl p-3 shadow-sm">
-                <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-lg font-bold text-gray-800">Total Game Time</h3>
-                  <span className="text-xs text-purple-600">(minutes)</span>
-                </div>
-                <div className="flex items-center justify-center gap-4">
-                  <button
-                    onClick={() => updateTotalTime(-1)}
-                    disabled={settings.totalTime <= 0}
+                    disabled={!canIncreaseRounds}
                     className={`w-10 h-10 rounded-full font-bold text-lg transition-all border-0 ${
-                      settings.totalTime <= 0
-                        ? 'bg-gray-200 text-white cursor-not-allowed'
-                        : 'bg-purple-200 text-purple-800 hover:bg-purple-300'
+                      canIncreaseRounds
+                        ? 'bg-purple-200 text-purple-800 hover:bg-purple-300'
+                        : 'bg-gray-200 text-white cursor-not-allowed'
                     }`}
-                  >
-                    -
-                  </button>
-                  <div className="bg-white border border-purple-300 rounded-xl px-6 py-1 text-center font-bold text-lg text-purple-800 min-w-[80px]">
-                    {settings.totalTime || '-'}
-                  </div>
-                  <button
-                    onClick={() => updateTotalTime(1)}
-                    className="w-10 h-10 bg-purple-200 text-purple-800 rounded-full font-bold text-lg hover:bg-purple-300 transition-all border-0"
                   >
                     +
                   </button>
@@ -300,7 +280,7 @@ const GameSettingsModal: React.FC<GameSettingsModalProps> = ({ onStart, onBack }
            <div className="flex justify-center items-center p-2 pb-6">
              <div className="max-w-4xl w-full flex justify-end pr-6">
                <button
-                 onClick={() => onStart(settings)}
+                 onClick={handlePlay}
                  className="px-8 py-3 bg-cyan-500 text-white rounded-lg font-bold text-lg hover:bg-cyan-600 shadow-lg"
                >
                  Play
@@ -310,6 +290,9 @@ const GameSettingsModal: React.FC<GameSettingsModalProps> = ({ onStart, onBack }
         </div>
       </div>
     </div>
+    <TutorialModal isOpen={isTutorialOpen} onClose={() => setIsTutorialOpen(false)} />
+    <SettingsGuideModal isOpen={isGuideOpen} onClose={() => setIsGuideOpen(false)} />
+    </>
   );
 };
 
