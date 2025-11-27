@@ -264,7 +264,15 @@ const TeamSetupScreen: React.FC<TeamSetupScreenProps> = ({ teams, onShuffle, onS
       {alertMessage && <AlertModal message={alertMessage} onClose={handleCloseAlert} />}
       
       <h1 className="text-6xl font-bold text-accent-yellow drop-shadow-lg mb-16" style={{ position: 'relative', zIndex: 2 }}>Team Setup</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-6xl" style={{ position: 'relative', zIndex: 2 }}>
+      <div
+        className="grid grid-cols-2 gap-8"
+        style={{
+          position: 'relative',
+          zIndex: 2,
+          width: '1100px',
+          maxWidth: '1100px'
+        }}
+      >
         <TeamBox
           title="Team A"
           teamColor="cyan"

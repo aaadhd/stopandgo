@@ -320,7 +320,7 @@ export const useGameLogic = () => {
         clearAllTimers();
         playSound('time-up');
         setGameState(prev => {
-            const { positions, currentRound } = prev;
+            const { positions, currentRound, maxRounds } = prev;
             let winner: Team | null = null;
 
             if (positions.cyan > positions.purple) {
@@ -349,7 +349,7 @@ export const useGameLogic = () => {
                     gamePhase: GamePhase.ROUND_END,
                     roundEndState: {
                         title: "Time's Up!",
-                        text: "No quiz this round.",
+                        text: "No quiz for this round.",
                         winner: null,
                         isSuccess: null,
                         nextAction: () => {
@@ -386,7 +386,7 @@ export const useGameLogic = () => {
             } else if (status.isSlowed) {
                 playSound('move-slow');
             } else {
-                playSound('move');
+            playSound('move');
             }
 
             let shouldTriggerWin = false;
@@ -760,11 +760,11 @@ export const useGameLogic = () => {
                         break;
                     case 'green':
                         nextState = 'yellow';
-                        delay = Math.random() * 800 + 1000; // 1-1.8초 (짧게!)
+                        delay = Math.random() * 200 + 1000; // 1-1.2초 (짧게!)
                         break;
                     case 'yellow':
                         nextState = 'red';
-                        delay = Math.random() * 500 + 800; // 0.8-1.3초 (경고)
+                        delay = Math.random() * 200 + 800; // 0.8-1초 (경고)
                         break;
                 }
                 
@@ -924,7 +924,7 @@ export const useGameLogic = () => {
     const startGameWithSettings = useCallback((settings: GameSettings) => {
         playSound('start');
         clearAllTimers();
-
+        
         setGameState(prev => ({
             ...prev,
             gamePhase: GamePhase.START,
