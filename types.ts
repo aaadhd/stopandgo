@@ -48,6 +48,8 @@ export type RoundEndState = {
     winner: Team | null;
     isSuccess: boolean | null;
     nextAction: () => void;
+    autoProceed?: boolean; // 자동 진행 여부
+    autoProceedDelay?: number; // 자동 진행 지연 시간 (ms)
 };
 
 export type GameSettings = {

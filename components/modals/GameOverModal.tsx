@@ -27,7 +27,32 @@ const GameOverModal: React.FC<GameOverModalProps> = ({ scores, onPlayAgain }) =>
 
     // 게임 오버 시 축하 효과음
     useEffect(() => {
-        playSound('game-over-win');
+        // result.mp3 파일 재생
+        const resultAudio = new Audio('/audios/result.mp3');
+        resultAudio.volume = 0.7; // 볼륨 설정
+        resultAudio.preload = 'auto';
+        
+        // 재생 시도
+        const playPromise = resultAudio.play();
+        if (playPromise !== undefined) {
+            playPromise
+                .then(() => {
+                    console.log('Result audio playing');
+                })
+                .catch(err => {
+                    console.warn('Result audio play failed:', err);
+                    // 재생 실패 시 재시도
+                    setTimeout(() => {
+                        resultAudio.play().catch(e => console.warn('Retry failed:', e));
+                    }, 100);
+                });
+        }
+        
+        // 컴포넌트 언마운트 시 정리
+        return () => {
+            resultAudio.pause();
+            resultAudio.currentTime = 0;
+        };
     }, []);
 
     return (

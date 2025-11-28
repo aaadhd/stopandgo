@@ -251,6 +251,8 @@ export default function App(): React.ReactNode {
                     onNext={roundEndState.nextAction}
                     isSuccess={roundEndState.isSuccess}
                     winner={roundEndState.winner}
+                    autoProceed={roundEndState.autoProceed ?? false}
+                    autoProceedDelay={roundEndState.autoProceedDelay ?? 2000}
                 />
             )}
 

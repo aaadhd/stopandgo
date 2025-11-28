@@ -396,12 +396,30 @@ const GameArea: React.FC<GameAreaProps> = ({ positions, playerStatus, currentLig
 
     // 벌칙 시 화면 진동 효과 제거됨
 
-    // 점수 변경 시 애니메이션 효과
+    // 점수 변경 시 애니메이션 효과 (확성기 클릭 제외)
+    const prevScoresRef = useRef(scores);
     useEffect(() => {
-        setScoreAnimation({ cyan: true, purple: true });
-        const timer = setTimeout(() => setScoreAnimation({ cyan: false, purple: false }), 300);
-        return () => clearTimeout(timer);
+        // 점수가 변경되었을 때만 애니메이션 (확성기 클릭은 제외)
+        const cyanChanged = prevScoresRef.current.cyan !== scores.cyan;
+        const purpleChanged = prevScoresRef.current.purple !== scores.purple;
+        
+        if (cyanChanged || purpleChanged) {
+            // 확성기 클릭이 아닌 경우에만 양쪽 모두 애니메이션
+            // (확성기 클릭은 handleCheerClick에서 처리)
+        }
+        
+        prevScoresRef.current = scores;
     }, [scores.cyan, scores.purple]);
+
+    // 확성기 클릭 핸들러
+    const handleCheerClick = (team: Team) => {
+        // 해당 팀만 애니메이션
+        setScoreAnimation(prev => ({ ...prev, [team]: true }));
+        const timer = setTimeout(() => {
+            setScoreAnimation(prev => ({ ...prev, [team]: false }));
+        }, 300);
+        onAddCheerPoints(team, 10);
+    };
 
 
     const themeRound = ((currentRound - 1) % 3) + 1;
@@ -471,7 +489,7 @@ const GameArea: React.FC<GameAreaProps> = ({ positions, playerStatus, currentLig
                         <span className="text-yellow-300 font-black drop-shadow-lg" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}>{scores.cyan}</span>
                         {/* 응원 버튼 - 뱃지 스타일 */}
                         <button
-                            onClick={() => onAddCheerPoints('cyan', 10)}
+                            onClick={() => handleCheerClick('cyan')}
                             className="w-8 h-8 rounded-full text-base bg-white hover:bg-yellow-100 active:scale-90 transition-all flex items-center justify-center"
                             style={{ 
                                 position: 'absolute',
@@ -532,7 +550,7 @@ const GameArea: React.FC<GameAreaProps> = ({ positions, playerStatus, currentLig
                         <span className="text-yellow-300 font-black drop-shadow-lg" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}>{scores.purple}</span>
                         {/* 응원 버튼 - 뱃지 스타일 */}
                         <button
-                            onClick={() => onAddCheerPoints('purple', 10)}
+                            onClick={() => handleCheerClick('purple')}
                             className="w-8 h-8 rounded-full text-base bg-white hover:bg-yellow-100 active:scale-90 transition-all flex items-center justify-center"
                             style={{ 
                                 position: 'absolute',

@@ -81,7 +81,7 @@ const QuizModal: React.FC<QuizModalProps> = ({ quiz, isLoading, winnerTeam, onAn
     const handleTimeout = useCallback(() => {
         setIsLocked(true);
         showFeedbackToast('timeout');
-        triggerExit(false);
+        setTimeout(() => triggerExit(false), 1500); // correct/incorrect와 동일한 타이밍
     }, [triggerExit]);
 
     useEffect(() => {

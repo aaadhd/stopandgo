@@ -162,20 +162,23 @@ export const useGameLogic = () => {
                     winner: team,
                     isSuccess: isCorrect,
                     nextAction: () => {
-                        if (prev.currentRound >= prev.maxRounds) {
-                            endGame();
-                        } else {
-                            setGameState(p => ({
-                                ...p,
-                                currentRound: p.currentRound + 1,
-                                gamePhase: GamePhase.ROUND_START,
-                                currentWinner: null,
-                                positions: { cyan: 5, purple: 5 },
-                                items: [],
-                                playerStatus: INITIAL_PLAYER_STATUSES,
-                                currentLight: 'red',
-                            }));
-                        }
+                        setGameState(p => {
+                            if (p.currentRound >= p.maxRounds) {
+                                endGame();
+                                return p;
+                            } else {
+                                return {
+                                    ...p,
+                                    currentRound: p.currentRound + 1,
+                                    gamePhase: GamePhase.ROUND_START,
+                                    currentWinner: null,
+                                    positions: { cyan: 5, purple: 5 },
+                                    items: [],
+                                    playerStatus: INITIAL_PLAYER_STATUSES,
+                                    currentLight: 'red',
+                                };
+                            }
+                        });
                     }
                 }
             };
@@ -197,6 +200,9 @@ export const useGameLogic = () => {
             // 타임아웃이면 10점
             newScores[team] += 10;
             
+            const currentRoundValue = prev.currentRound;
+            const maxRoundsValue = prev.maxRounds;
+            
             return {
                 ...prev,
                 scores: newScores,
@@ -207,20 +213,23 @@ export const useGameLogic = () => {
                     winner: team,
                     isSuccess: false,
                     nextAction: () => {
-                        if (prev.currentRound >= prev.maxRounds) {
-                            endGame();
-                        } else {
-                            setGameState(p => ({
-                                ...p,
-                                currentRound: p.currentRound + 1,
-                                gamePhase: GamePhase.ROUND_START,
-                                currentWinner: null,
-                                positions: { cyan: 5, purple: 5 },
-                                items: [],
-                                playerStatus: INITIAL_PLAYER_STATUSES,
-                                currentLight: 'red',
-                            }));
-                        }
+                        setGameState(p => {
+                            if (p.currentRound >= p.maxRounds) {
+                                endGame();
+                                return p;
+                            } else {
+                                return {
+                                    ...p,
+                                    currentRound: p.currentRound + 1,
+                                    gamePhase: GamePhase.ROUND_START,
+                                    currentWinner: null,
+                                    positions: { cyan: 5, purple: 5 },
+                                    items: [],
+                                    playerStatus: INITIAL_PLAYER_STATUSES,
+                                    currentLight: 'red',
+                                };
+                            }
+                        });
                     }
                 }
             };
@@ -255,10 +264,10 @@ export const useGameLogic = () => {
             quizTimeoutRef.current = null;
         }
 
-        // 퀴즈 타임아웃 설정 (8초)
+        // 퀴즈 타임아웃 설정 (10초 + 1.5초 피드백 표시 시간 = 11.5초)
         quizTimeoutRef.current = setTimeout(() => {
             handleQuizTimeout(winnerTeam);
-        }, 8000);
+        }, 11500);
         
         try {
             const quizData = await generateQuizQuestion();
@@ -331,15 +340,20 @@ export const useGameLogic = () => {
 
             if (winner) {
                 // A player was closer, give them a quiz
+                const winnerTeam = winner;
                 return {
                     ...prev,
                     gamePhase: GamePhase.ROUND_END,
                     roundEndState: {
                         title: "Time's Up!",
-                        text: `${winner === 'cyan' ? 'Team A' : 'Team B'} was closer! Get ready for a quiz.`,
+                        text: `${winner === 'cyan' ? 'Team A' : 'Team B'} was closer!\nGet ready for a quiz.`,
                         winner: winner,
                         isSuccess: null,
-                        nextAction: () => showQuiz(winner as Team),
+                        nextAction: () => {
+                            showQuiz(winnerTeam);
+                        },
+                        autoProceed: true, // 자동으로 퀴즈 창으로 전환
+                        autoProceedDelay: 2000, // 2초 후 자동 진행
                     }
                 };
             } else {
@@ -353,19 +367,22 @@ export const useGameLogic = () => {
                         winner: null,
                         isSuccess: null,
                         nextAction: () => {
-                            if (currentRound >= maxRounds) {
-                                endGame();
-                            } else {
-                                setGameState(p => ({
-                                    ...p,
-                                    currentRound: p.currentRound + 1,
-                                    gamePhase: GamePhase.ROUND_START,
-                                    positions: { cyan: 5, purple: 5 },
-                                    items: [],
-                                    playerStatus: INITIAL_PLAYER_STATUSES,
-                                    currentLight: 'red',
-                                }));
-                            }
+                            setGameState(p => {
+                                if (p.currentRound >= p.maxRounds) {
+                                    endGame();
+                                    return p;
+                                } else {
+                                    return {
+                                        ...p,
+                                        currentRound: p.currentRound + 1,
+                                        gamePhase: GamePhase.ROUND_START,
+                                        positions: { cyan: 5, purple: 5 },
+                                        items: [],
+                                        playerStatus: INITIAL_PLAYER_STATUSES,
+                                        currentLight: 'red',
+                                    };
+                                }
+                            });
                         }
                     }
                 };
@@ -756,11 +773,11 @@ export const useGameLogic = () => {
                 switch(lightSequenceRef.current.currentState) {
                     case 'red': 
                         nextState = 'green';
-                        delay = Math.random() * 1000 + 1500; // 1.5-2.5초 (기다림)
+                        delay = Math.random() * 200 + 1000; // 1.0-1.2초
                         break;
                     case 'green':
                         nextState = 'yellow';
-                        delay = Math.random() * 200 + 1000; // 1-1.2초 (짧게!)
+                        delay = Math.random() * 300 + 1200; // 1.2-1.5초
                         break;
                     case 'yellow':
                         nextState = 'red';
